@@ -52,8 +52,11 @@ def check_folder(folder):
     global commands
 
     for file in files:
-        if path.isfile(path.join(folder, file)):
-            with open(path.join(folder, file)) as f:
+        file_abs = path.join(folder, file)
+        
+        if path.isfile(file_abs):
+            print('Opening', file_abs)
+            with open(file_abs) as f:
                 for cmd in f.readlines():
                     cmd = cmd.replace('\n', '')
                     cmd_name = cmd[0:cmd.find(' ')]
@@ -62,9 +65,8 @@ def check_folder(folder):
                         commands += [cmd]
                     if cmd_name not in command_names:
                         command_names += [cmd_name]
-                    
         else:
-            check_folder(os.path.join(folder, file))
+            check_folder(file_abs)
 
 check_folder(functions_folder)
 
