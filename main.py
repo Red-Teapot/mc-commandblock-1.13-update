@@ -2,6 +2,7 @@ import os
 
 from process import process_region
 
+# TODO Get path from command line
 world_folder = os.path.abspath('/home/redteapot/.local/share/multimc/instances/1.13/.minecraft/saves/World Update Test')
 regions_folder = os.path.join(world_folder, 'region')
 
