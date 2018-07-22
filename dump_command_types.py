@@ -22,13 +22,19 @@ print('Processing in-world CBs')
 
 def process_callback(cb):
     cmd = cb['Command'].value.replace('\n', '')
+
+    if not cmd:
+        return False
+
+    if cmd[0] == '/':
+        cmd = cmd[1:]
+    
     cmd_name = cmd[0:cmd.find(' ')]
 
     global command_names
     global commands
 
-    if cmd:
-        commands += [cmd]
+    commands += [cmd]
     if cmd_name not in command_names:
         command_names += [cmd_name]
 
@@ -53,16 +59,25 @@ def check_folder(folder):
 
     for file in files:
         file_abs = path.join(folder, file)
-        
+
         if path.isfile(file_abs):
             print('Opening', file_abs)
             with open(file_abs) as f:
                 for cmd in f.readlines():
                     cmd = cmd.replace('\n', '')
+
+                    if not cmd:
+                        continue
+
+                    if cmd[0] == '#':
+                        continue
+                    
+                    if cmd[0] == '/':
+                        cmd = cmd[1:]
+
                     cmd_name = cmd[0:cmd.find(' ')]
 
-                    if cmd:
-                        commands += [cmd]
+                    commands += [cmd]
                     if cmd_name not in command_names:
                         command_names += [cmd_name]
         else:
