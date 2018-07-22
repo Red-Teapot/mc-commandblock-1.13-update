@@ -8,7 +8,12 @@ regions_folder = os.path.join(world_folder, 'region')
 
 region_files = [f for f in os.listdir(regions_folder) if os.path.isfile(os.path.join(regions_folder, f))]
 
+def dump_info(cb):
+    print(cb['x'], cb['y'], cb['z'], cb['Command'])
+
+    return False
+
 for file in region_files:
     file_abs = os.path.join(regions_folder, file)
 
-    process_region(file_abs)
+    process_region(file_abs, dump_info)
