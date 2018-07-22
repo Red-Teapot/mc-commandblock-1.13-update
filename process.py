@@ -11,24 +11,24 @@ def process_region(reg):
         level = chunk['Level']
         tile_entities = level['TileEntities']
 
-        found_command_block = False
+        chunk_needs_update = False
 
         for ent in tile_entities:
-            if str(ent['id']) == 'minecraft:command_block':
-                cmd = ent['Command'].valuestr()
-                x = ent['x']
-                y = ent['y']
-                z = ent['z']
+            if ent['id'].value == 'minecraft:command_block':
+                cmd = ent['Command'].value
+                x = ent['x'].value
+                y = ent['y'].value
+                z = ent['z'].value
 
-                print(x, y, z, cmd)
+                print(x, y, z, '|' + cmd + '|')
 
-                cmd += ' lol'
+                #cmd += ' lol'
 
-                ent['Command'].value = cmd
+                #ent['Command'].value = cmd
 
-                found_command_block = True
+                #chunk_needs_update = True
 
-        if found_command_block:
+        if chunk_needs_update:
             reg_nbt.write_chunk(m.x, m.z, chunk)
     
     reg_nbt.close()
