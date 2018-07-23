@@ -7,7 +7,7 @@ def parse(tokenizer: Tokenizer, command: Command):
     if tokenizer.expect_char('@', optional=True, pop=False):
         selector = parse_target_selector(tokenizer.stream)
     else:
-        selector = tokenizer.expect_alnum_word(['_', '#', '.'])
+        selector = tokenizer.expect_nickname()
     
     data = tokenizer.expect_json()
 
