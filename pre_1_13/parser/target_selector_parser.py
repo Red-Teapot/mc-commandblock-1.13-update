@@ -4,7 +4,7 @@ from utils import CharStream
 
 VARIABLE_TYPES = ['p', 'r', 'a', 'e', 's']
 
-def parse(raw):
+def parse_target_selector(raw):
     if type(raw) == str:
         stream = CharStream(raw)
     elif type(raw) == CharStream:
