@@ -1,47 +1,30 @@
 class CharStream(object):
-    raw = ''
-    idx = 0
-
     def __init__(self, raw):
         self.raw = raw
+        self.idx = 0
     
     def peek(self):
-        return self.raw[0]
+        return self.raw[self.idx]
     
     def pop(self):
-        c = self.raw[0]
-        self.raw = self.raw[1:]
+        result = self.raw[self.idx]
         self.idx += 1
-        return c
-
-    def peek_word(self):
+        return result
+    
+    def peek_alnum_word(self, allowed_chars=list()):
         result = ''
 
-        for c in self.raw:
-            if result:
-                if c.isalnum():
-                    result += c
-                else:
-                    break
+        i = self.idx
+        while i < len(self.raw):
+            c = self.raw[i]
+            if c.isalnum() or c in allowed_chars:
+                result += c
             else:
-                if c.isalnum():
-                    result += c
+                break
+            
+            i += 1
         
         return result
     
-    def pop_word(self):
-        result = ''
-
-        for c in self.raw:
-            if result:
-                if c.isalnum():
-                    result += c
-                else:
-                    break
-            else:
-                if c.isalnum():
-                    result += c
-            
-        self.raw = self.raw[len(result):]
-        
-        return result
+    def get_rest(self):
+        return self.raw[self.idx:]
