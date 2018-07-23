@@ -72,3 +72,6 @@ class Tokenizer(object):
         if len(self.stream.get_rest()) > 0:
             raise Exception('Unknown arguments: \'{}\''.format(self.stream.get_rest()))
     
+    def expect_nickname(self):
+        return self.expect_alnum_word(['#', '_', '.'])
+    
