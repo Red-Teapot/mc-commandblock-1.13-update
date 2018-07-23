@@ -8,10 +8,8 @@ def parse(tokenizer: Tokenizer, command: Command):
         selector = parse_target_selector(tokenizer.stream)
     else:
         selector = tokenizer.expect_alnum_word(['_', '#', '.'])
-    
-    data = tokenizer.expect_json()
 
+    # TODO Parse NBT
     tokenizer.expect_end()
 
-    command.args = [selector, data]
-    
+    command.args = [selector]

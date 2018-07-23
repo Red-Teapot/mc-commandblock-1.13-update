@@ -1,11 +1,12 @@
 from ..command import Command, TargetSelector
 from utils import CharStream, Tokenizer
-from .commands import tellraw
+from .commands import tellraw, testfor
 
 
 # Dict values are functions like parse(tokenizer: Tokenizer, command: Command)
 COMMAND_PARSERS = {
     'tellraw': tellraw.parse,
+    'testfor': testfor.parse,
 }
 
 def parse_command(raw):
