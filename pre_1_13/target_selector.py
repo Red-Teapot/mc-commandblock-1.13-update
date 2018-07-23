@@ -1,17 +1,13 @@
 class TargetSelector(object):
-    variable = None
-    arguments = dict()
-    scores = dict()
-
-    def __init__(self, variable=None, arguments=dict(), scores=dict()):
-        self.variable = variable
-        self.arguments = arguments
-        self.scores = scores
+    def __init__(self, variable=None, arguments=None, scores=None):
+        self.variable = variable if variable else None
+        self.arguments = arguments if arguments else dict()
+        self.scores = scores if scores else dict()
     
     def __str__(self):
         result = '@'
 
-        result += self.variable
+        result += str(self.variable)
 
         if len(self.arguments) > 0 or len(self.scores) > 0:
             result += '['
