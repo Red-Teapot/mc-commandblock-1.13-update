@@ -4,12 +4,18 @@ class CharStream(object):
         self.idx = 0
     
     def peek(self):
-        return self.raw[self.idx]
+        if self.idx < len(self.raw):
+            return self.raw[self.idx]
+        else:
+            return None
     
     def pop(self):
-        result = self.raw[self.idx]
-        self.idx += 1
-        return result
+        if self.idx < len(self.raw):
+            result = self.raw[self.idx]
+            self.idx += 1
+            return result
+        else:
+            return None
     
     def peek_alnum_word(self, allowed_chars=list()):
         result = ''
