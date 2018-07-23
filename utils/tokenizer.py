@@ -66,3 +66,9 @@ class Tokenizer(object):
         
         return data
     
+    def expect_end(self):
+        self.skip_spaces()
+
+        if len(self.stream.get_rest()) > 0:
+            raise Exception('Unknown arguments: \'{}\''.format(self.stream.get_rest()))
+    
