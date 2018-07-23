@@ -2,7 +2,7 @@ import json
 
 from pre_1_13 import Command, TargetSelector
 from ..target_selector_parser import parse_target_selector
-from utils import CharStream, Tokenizer, parse_alnum_word, consume_spaces
+from utils import CharStream, Tokenizer
 
 
 def parse(tokenizer: Tokenizer, command: Command):
