@@ -35,7 +35,7 @@ class NBTInteger(NBTType):
         if self.size:
             return str(self.value) + self.size
         else:
-            return self.value
+            return str(self.value)
     
     def __str__(self):
         return '<NBTInteger {}{}>'.format(self.value, self.size if self.size else '')

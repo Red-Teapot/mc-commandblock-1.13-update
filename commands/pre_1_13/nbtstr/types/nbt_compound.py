@@ -21,6 +21,11 @@ class NBTCompound(NBTType):
         result = '{'
         
         for key, value in self.values.items():
+            for c in ' {}[],:':
+                if c in key:
+                    key = '"' + key + '"'
+                    break
+            
             result += key + ':'
 
             if hasattr(value, 'serialize'):
