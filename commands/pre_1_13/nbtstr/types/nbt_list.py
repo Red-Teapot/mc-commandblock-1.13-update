@@ -14,15 +14,9 @@ class NBTList(NBTType):
     def values(self, values: list):
         self.__values = values
     
-    def __serialize_member(self, member) -> str:
-        if hasattr(member, 'serialize'):
-            return member.serialize()
-        else:
-            return str(member)
-    
     def serialize(self) -> str:
         if self.values:
-            return '[{}]'.format(','.join([self.__serialize_member(x) for x in self.values]))
+            return '[{}]'.format(','.join([NBTType.serialize_val(x) for x in self.values]))
         else:
             return '[]'
     

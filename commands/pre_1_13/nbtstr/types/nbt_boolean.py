@@ -21,4 +21,4 @@ class NBTBoolean(NBTType):
             return 'false'
     
     def __str__(self):
-        return '<NBTBoolean {}>'.format('true' if self.value else 'false')
+        return '<NBTBoolean {}>'.format(self.serialize())

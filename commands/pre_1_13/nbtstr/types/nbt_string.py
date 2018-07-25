@@ -31,7 +31,4 @@ class NBTString(NBTType):
             return value
     
     def __str__(self):
-        if self.value:
-            return '<NBTString \'{}\'>'.format(self.value)
-        else:
-            return '<NBTString (no value)>'
+        return '<NBTString {}>'.format(self.serialize())

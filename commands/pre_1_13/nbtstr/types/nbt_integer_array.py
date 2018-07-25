@@ -27,10 +27,7 @@ class NBTIntegerArray(NBTType):
         if not self.values:
             return '[{};]'.format(self.size)
         else:
-            return '[{};{}]'.format(self.size, ','.join([str(x) for x in self.values]))
+            return '[{};{}]'.format(self.size, ','.join([NBTType.serialize_val(x) for x in self.values]))
     
     def __str__(self):
-        if not self.values:
-            return '<NBTIntegerArray [{};]>'.format(self.size)
-        else:
-            return '<NBTIntegerArray [{};{}]>'.format(self.size, ','.join([str(x) for x in self.values]))
+        return '<NBTIntegerArray {}>'.format(self.serialize())

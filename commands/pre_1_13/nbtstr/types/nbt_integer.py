@@ -38,4 +38,4 @@ class NBTInteger(NBTType):
             return str(self.value)
     
     def __str__(self):
-        return '<NBTInteger {}{}>'.format(self.value, self.size if self.size else '')
+        return '<NBTInteger {}>'.format(self.serialize())

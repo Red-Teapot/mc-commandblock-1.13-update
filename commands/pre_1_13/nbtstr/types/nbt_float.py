@@ -37,4 +37,4 @@ class NBTFloat(NBTType):
             return str(self.value)
     
     def __str__(self):
-        return '<NBTFloat {}{}>'.format(self.value, self.size if self.size else '')
+        return '<NBTFloat {}>'.format(self.serialize())

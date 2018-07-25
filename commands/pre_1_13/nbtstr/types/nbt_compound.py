@@ -28,10 +28,7 @@ class NBTCompound(NBTType):
             
             result += key + ':'
 
-            if hasattr(value, 'serialize'):
-                result += value.serialize()
-            else:
-                result += str(value)
+            result += NBTType.serialize_val(value)
             
             result += ','
         
