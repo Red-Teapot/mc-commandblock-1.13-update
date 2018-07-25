@@ -351,10 +351,19 @@ class Tokenizer(object):
         return result
 
     def expect_nbtstr(self, pop=True) -> NBTType:
-        result, length = nbtstr_parser.parse(self.source[self.pos:])
+        pos = self.pos
+        while True:
+            c = self.char(pos)
+
+            if c != ' ':
+                break
+            
+            pos += 1
+
+        result, length = nbtstr_parser.parse(self.source[pos:])
 
         if pop:
-            self.pos += length
+            self.pos += length + pos
 
         return result
 
