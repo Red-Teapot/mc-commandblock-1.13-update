@@ -6,8 +6,6 @@ class ID(object):
     
     def __str__(self):
         if self.namespace:
-            strval = self.namespace + ':' + self.value
+            return self.namespace + ':' + self.value
         else:
-            strval = self.value
-        
-        return '<ID \'{}\'>'.format(strval)
+            return self.value

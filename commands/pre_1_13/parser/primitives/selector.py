@@ -6,18 +6,29 @@ class Selector(object):
         self.scores = scores
     
     def __str__(self):
-        strval = ''
+        result = '@' + self.variable
+
+        have_args = False
+        if self.arguments and len(self.arguments) > 0:
+            have_args = True
+        if self.scores and len(self.scores) > 0:
+            have_args = True
         
-        for key, value in self.arguments.items():
-            strval += (key + '=' + str(value) + ',')
+        if have_args:
+            result += '['
         
-        for key, value in self.scores.items():
-            if 'min' in value:
-                strval += ('score_' + key + '_min=' + str(value['min']) + ',')
-            if 'max' in value:
-                strval += ('score_' + key + '=' + str(value['max']) + ',')
+            for key, value in self.arguments.items():
+                result += (key + '=' + str(value) + ',')
+            
+            for key, value in self.scores.items():
+                if 'min' in value:
+                    result += ('score_' + key + '_min=' + str(value['min']) + ',')
+                if 'max' in value:
+                    result += ('score_' + key + '=' + str(value['max']) + ',')
+            
+            if result[-1] == ',':
+                result = result[:-1]
+            
+            result += ']'
         
-        if strval[-1] == ',':
-            strval = strval[:-1]
-        
-        return '<Selector @{}[{}]>'.format(self.variable, strval)
+        return result

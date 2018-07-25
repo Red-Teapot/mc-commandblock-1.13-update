@@ -6,8 +6,12 @@ class Coordinate(object):
     
     def __str__(self):
         if self.prefix:
-            strval = self.prefix + '' + str(self.value)
+            if self.value:
+                return self.prefix + str(self.value)
+            else:
+                return self.prefix
         else:
-            strval = str(self.value)
-        
-        return '<Coordinate {}>'.format(strval)
+            if self.value:
+                return str(self.value)
+            else:
+                return '0'
