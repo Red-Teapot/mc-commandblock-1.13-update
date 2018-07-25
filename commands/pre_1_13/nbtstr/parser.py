@@ -234,6 +234,9 @@ class Parser(object):
         self.source = source.lstrip()
         self.pos = 0
 
+        if not self.source:
+            return None
+
         return self.__parse_node()
         
 
