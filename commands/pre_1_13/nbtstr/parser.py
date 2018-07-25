@@ -150,6 +150,10 @@ class Parser(object):
         values = list()
 
         while True:
+            if self.get(self.pos) == ']':
+                self.pos += 1
+                break
+            
             old_pos = self.pos
 
             val = self.__parse_primitive()
@@ -169,16 +173,43 @@ class Parser(object):
 
             if c == ',':
                 self.pos += 1
-            elif c == ']':
-                self.pos += 1
-                break
-            else:
+            elif c != ']':
                 raise Exception('Unknown char at {}:\'{}\', expected , or ]'.format(self.pos, self.get(self.pos)))
         
         return NBTIntegerArray(size, values)
 
     def __parse_list(self) -> NBTList:
-        pass
+        if self.get(self.pos) != '[':
+            raise Exception('Unknown char at {}:\'{}\', expected \'{}\''.format(self.pos, self.get(self.pos), '['))
+        
+        self.pos += 1
+
+        val_type = None
+        values = list()
+
+        while True:
+            if self.get(self.pos) == ']':
+                self.pos += 1
+                break
+            
+            old_pos = self.pos
+
+            val = self.__parse_node()
+
+            if not val_type:
+                val_type = type(val)
+                values += [val]
+            elif val_type == type(val):
+                values += [val]
+            else:
+                raise Exception('Unknown node type at {}: {}, expected {}'.format(old_pos, type(val).__name__, val_type.__name__))
+            
+            if self.get(self.pos) == ',':
+                self.pos += 1
+            elif self.get(self.pos) != ']':
+                raise Exception('Unknown char at {}:\'{}\', expected \'{}\''.format(self.pos, self.get(self.pos), ','))
+        
+        return NBTList(values)
 
     def __parse_node(self) -> NBTType:
         # Try to figure out base type
