@@ -229,7 +229,7 @@ class Parser(object):
             return self.__parse_primitive()
     
     def parse(self, source: str) -> NBTType:
-        self.source = source.strip()
+        self.source = source.lstrip()
         self.pos = 0
 
         return self.__parse_node()
