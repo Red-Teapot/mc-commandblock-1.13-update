@@ -1,8 +1,9 @@
 from json import JSONDecoder
 
-from .primitives.id import ID
-from .primitives.coordinate import Coordinate
-from .primitives.selector import Selector
+from .primitives import ID
+from .primitives import Coordinate
+from .primitives import Selector
+from .primitives import BlockState
 from .. import nbtstr
 from ..nbtstr.types import NBTType
 
@@ -370,7 +371,7 @@ class Tokenizer(object):
 
         return result
 
-    def expect_blockstate(self, pop=True):
+    def expect_blockstate(self, pop=True) -> BlockState:
         pos = self.pos
 
         while True:
@@ -438,4 +439,4 @@ class Tokenizer(object):
         if pop:
             self.pos = pos
 
-        return result
+        return BlockState(result)
