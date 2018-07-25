@@ -21,7 +21,7 @@ class Parser(object):
             if not c:
                 break
 
-            if c.isalnum() or c in '-._':
+            if c.isalnum() or c in '._+-':
                 val += c
             else:
                 break
@@ -39,7 +39,8 @@ class Parser(object):
             try:
                 return NBTInteger(size, int(val))
             except: 
-                val += size
+                if size:
+                    val += size
         
         if val[-1].isdigit() or val[-1] in 'FDfd':  # Try to get float
             size = None
@@ -49,7 +50,8 @@ class Parser(object):
             try:
                 return NBTFloat(size, float(val))
             except: 
-                val += size
+                if size:
+                    val += size
         
         return NBTString(val)
     
@@ -80,7 +82,7 @@ class Parser(object):
         
         return NBTString(val)
 
-    def __parse_key(self) -> str:  # Compound key (string or alnum with _, no spaces or stuff)
+    def __parse_key(self) -> str:  # Compound key (string or alnum with ._+-, no spaces or stuff)
         if self.get(self.pos) == '"':  # Key is wrapped in quotes
             return self.__parse_string().value
 
@@ -92,7 +94,7 @@ class Parser(object):
             if not c:
                 break
 
-            if c.isalnum() or c == '_':
+            if c.isalnum() or c in '._+-':
                 val += c
             else:
                 break

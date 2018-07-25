@@ -19,8 +19,8 @@ class NBTString(NBTType):
             return '""'
         
         add_quotes = False
-        for c in [' ', ',', '{', '}', '[', ']']:
-            if c in self.value:
+        for c in self.value:
+            if not c.isalnum() and c not in '._+-':
                 add_quotes = True
                 break
         
