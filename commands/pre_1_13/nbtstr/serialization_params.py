@@ -58,6 +58,6 @@ class SerializationParams(object):
     @key_quote_mode.setter
     def key_quote_mode(self, mode: str):
         if mode not in ['auto', 'force']:
-            raise TypeError('Mode must be one of [auto, force, preserve]')
+            raise TypeError('Mode must be one of [auto, force]')
         
         self.__key_quote_mode = mode
