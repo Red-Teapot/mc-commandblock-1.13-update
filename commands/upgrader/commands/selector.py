@@ -15,7 +15,7 @@ GAMEMODES = {
     'sp': 'spectator'
 }
 
-def upgrade(selector: Selector) -> str:
+def upgrade(selector: Selector, additional_arguments: dict=None) -> str:
     result = '@' + selector.variable
 
     has_args = False
@@ -26,7 +26,10 @@ def upgrade(selector: Selector) -> str:
     if selector.scores and len(selector.scores) > 0:
         has_args = True
     
-    args = dict()
+    if additional_arguments:
+        args = additional_arguments
+    else:
+        args = dict()
 
     # Pre-process arguments: use new names and merge values like r and rm into one dict
     for name, value in selector.arguments.items():
