@@ -107,11 +107,11 @@ def upgrade(selector: Selector) -> str:
             val = '..' + str(value['max'])
         
         scores_str += name + '=' + val + ','
-    
-    if scores_str[-1] == ',':
-        scores_str = scores_str[:-1]
 
     if scores_str:
+        if scores_str[-1] == ',':
+            scores_str = scores_str[:-1]
+        
         result += 'scores={' + scores_str + '},'
     
     if has_args:
