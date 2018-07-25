@@ -238,7 +238,3 @@ class Parser(object):
             return None
 
         return self.__parse_node()
-        
-
-def parse(source: str) -> NBTType:
-    pass
