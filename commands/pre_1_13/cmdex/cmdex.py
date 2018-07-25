@@ -6,7 +6,7 @@ from ..parser.tokenizer import Tokenizer
 # `{type:name}`` or `word`
 # First will match token of type `type` and place it under the name `name`
 # Second will match that exact word and fail otherwise
-# Token types: str, float, int, json, nbtstr, selector, id, blockstate, coordinate
+# Token types: str, float, int, json, nbtstr, selector, id, blockstate, coordinate, * (will catch the rest of a command)
 
 class CMDEx(object):
 
