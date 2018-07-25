@@ -10,19 +10,19 @@ from ..nbtstr.types import NBTType
 
 json_decoder = JSONDecoder()
 allowed_selector_variables = ['p', 'e', 'a', 'r', 's']
-selector_arguments = {
-    'x': int, 'y': int, 'z': int,
-    'dx': int, 'dy': int, 'dz': int,
-    'r': int, 'rm': int,
-    'tag': str, 'team': str,
-    'c': int,
-    'l': int, 'lm': int,
-    'm': str,
-    'name': str,
-    'rx': int, 'rxm': int,
-    'ry': int, 'rym': int,
-    'type': str,
-}
+selector_arguments = [
+    'x', 'y', 'z',
+    'dx', 'dy', 'dz',
+    'r', 'rm',
+    'tag', 'team',
+    'c',
+    'l', 'lm',
+    'm',
+    'name',
+    'rx', 'rxm',
+    'ry', 'rym',
+    'type',
+]
 nbtstr_parser = nbtstr.Parser()
 
 def process_selector_arguments(args: list) -> dict:
