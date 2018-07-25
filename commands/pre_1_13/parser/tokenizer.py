@@ -3,6 +3,7 @@ from json import JSONDecoder
 from .primitives.id import ID
 from .primitives.coordinate import Coordinate
 from .primitives.selector import Selector
+from .. import nbtstr
 
 
 json_decoder = JSONDecoder()
@@ -20,6 +21,7 @@ selector_arguments = {
     'ry': int, 'rym': int,
     'type': str,
 }
+nbtstr_parser = nbtstr.Parser()
 
 def process_selector_arguments(args: list) -> dict:
     scores = dict()
@@ -334,5 +336,9 @@ class Tokenizer(object):
         return result
 
     def expect_nbtstr(self, pop=True):
-        # TODO Parser for NBT strings?
-        raise NotImplementedError()
+        result, length = nbtstr_parser.parse(self.source[self.pos:])
+
+        if pop:
+            self.pos += length
+
+        return result

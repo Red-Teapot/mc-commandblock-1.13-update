@@ -237,4 +237,4 @@ class Parser(object):
         if not self.source:
             return None
 
-        return self.__parse_node()
+        return self.__parse_node(), self.pos
