@@ -1,4 +1,5 @@
 from . import NBTType
+from ..serialization_params import SerializationParams
 
 
 class NBTInteger(NBTType):
@@ -31,11 +32,16 @@ class NBTInteger(NBTType):
         # TODO Maybe some range check?
         self.__value = value
     
-    def serialize(self) -> str:
-        if self.size:
-            return str(self.value) + self.size
+    def serialize(self, serialization_params: SerializationParams) -> str:
+        size = self.size
+
+        if not size and serialization_params.integer_suffix_mode == 'force':
+            size = serialization_params.default_integer_suffix
+        
+        if size:
+            return str(self.value) + size
         else:
             return str(self.value)
     
     def __str__(self):
-        return '<NBTInteger {}>'.format(self.serialize())
+        return '<NBTInteger {}>'.format(self.serialize(NBTType.default_serialization_params))

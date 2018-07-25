@@ -1,4 +1,5 @@
 from . import NBTType
+from ..serialization_params import SerializationParams
 
 
 class NBTFloat(NBTType):
@@ -30,11 +31,16 @@ class NBTFloat(NBTType):
     def value(self, value: float):
         self.__value = value
     
-    def serialize(self) -> str:
-        if self.size:
-            return str(self.value) + self.size
+    def serialize(self, serialization_params: SerializationParams) -> str:
+        size = self.size
+
+        if not size and serialization_params.float_suffix_mode == 'force':
+            size = 'F'
+        
+        if size:
+            return str(self.value) + size
         else:
             return str(self.value)
     
     def __str__(self):
-        return '<NBTFloat {}>'.format(self.serialize())
+        return '<NBTFloat {}>'.format(self.serialize(NBTType.default_serialization_params))

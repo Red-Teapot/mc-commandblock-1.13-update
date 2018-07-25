@@ -1,4 +1,5 @@
 from . import NBTType
+from ..serialization_params import SerializationParams
 
 
 class NBTIntegerArray(NBTType):
@@ -23,11 +24,11 @@ class NBTIntegerArray(NBTType):
     def values(self, values: list):
         self.__values = values
     
-    def serialize(self) -> str:
+    def serialize(self, serialization_params: SerializationParams) -> str:
         if not self.values:
             return '[{};]'.format(self.size)
         else:
-            return '[{};{}]'.format(self.size, ','.join([NBTType.serialize_val(x) for x in self.values]))
+            return '[{};{}]'.format(self.size, ','.join([NBTType.serialize_val(x, serialization_params) for x in self.values]))
     
     def __str__(self):
-        return '<NBTIntegerArray {}>'.format(self.serialize())
+        return '<NBTIntegerArray {}>'.format(self.serialize(NBTType.default_serialization_params))

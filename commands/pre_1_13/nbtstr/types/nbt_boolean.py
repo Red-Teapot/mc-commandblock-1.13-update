@@ -1,4 +1,5 @@
 from . import NBTType
+from ..serialization_params import SerializationParams
 
 
 class NBTBoolean(NBTType):
@@ -14,11 +15,11 @@ class NBTBoolean(NBTType):
     def value(self, value:bool):
         self.__value = value
     
-    def serialize(self) -> str:
+    def serialize(self, serialization_params: SerializationParams) -> str:
         if self.value:
             return 'true'
         else:
             return 'false'
     
     def __str__(self):
-        return '<NBTBoolean {}>'.format(self.serialize())
+        return '<NBTBoolean {}>'.format(self.serialize(NBTType.default_serialization_params))

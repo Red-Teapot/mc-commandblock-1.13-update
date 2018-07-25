@@ -1,4 +1,5 @@
 from . import NBTType
+from ..serialization_params import SerializationParams
 
 
 class NBTCompound(NBTType):
@@ -14,7 +15,7 @@ class NBTCompound(NBTType):
     def values(self, values: dict):
         self.__values = values
     
-    def serialize(self) -> str:
+    def serialize(self, serialization_params: SerializationParams) -> str:
         if not self.values:
             return '{}'
         
@@ -28,7 +29,7 @@ class NBTCompound(NBTType):
             
             result += key + ':'
 
-            result += NBTType.serialize_val(value)
+            result += NBTType.serialize_val(value, serialization_params)
             
             result += ','
         
@@ -40,4 +41,4 @@ class NBTCompound(NBTType):
         return result
     
     def __str__(self):
-        return '<NBTCompound {}>'.format(self.serialize())
+        return '<NBTCompound {}>'.format(self.serialize(NBTType.default_serialization_params))

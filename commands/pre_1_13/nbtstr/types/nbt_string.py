@@ -1,4 +1,5 @@
 from . import NBTType
+from ..serialization_params import SerializationParams
 
 
 class NBTString(NBTType):
@@ -15,15 +16,24 @@ class NBTString(NBTType):
     def value(self, value):
         self.__value = value
     
-    def serialize(self) -> str:
+    def serialize(self, serialization_params: SerializationParams) -> str:
         if not self.value:
             return '""'
         
         add_quotes = False
-        for c in self.value:
-            if not c.isalnum() and c not in '._+-':
-                add_quotes = True
-                break
+        
+        # Follow ser. params
+        if serialization_params.string_quote_mode == 'force':
+            add_quotes = True
+        elif serialization_params.string_quote_mode == 'preserve':
+            add_quotes = self.had_quotes
+        
+        # Don't allow to serialize incorrectly
+        if not add_quotes:
+            for c in self.value:
+                if not c.isalnum() and c not in '._+-':
+                    add_quotes = True
+                    break
         
         value = self.value.replace('"', '\\"')
         if add_quotes:
@@ -32,4 +42,4 @@ class NBTString(NBTType):
             return value
     
     def __str__(self):
-        return '<NBTString {}>'.format(self.serialize())
+        return '<NBTString {}>'.format(self.serialize(NBTType.default_serialization_params))

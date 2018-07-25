@@ -1,4 +1,5 @@
 from . import NBTType
+from ..serialization_params import SerializationParams
 
 
 class NBTList(NBTType):
@@ -14,9 +15,9 @@ class NBTList(NBTType):
     def values(self, values: list):
         self.__values = values
     
-    def serialize(self) -> str:
+    def serialize(self, serialization_params: SerializationParams) -> str:
         if self.values:
-            return '[{}]'.format(','.join([NBTType.serialize_val(x) for x in self.values]))
+            return '[{}]'.format(','.join([NBTType.serialize_val(x, serialization_params) for x in self.values]))
         else:
             return '[]'
     
@@ -24,4 +25,4 @@ class NBTList(NBTType):
         if not self.values:
             return '<NBTList (no values)>'
         
-        return '<NBTList {}>'.format(self.serialize())
+        return '<NBTList {}>'.format(self.serialize(NBTType.default_serialization_params))
