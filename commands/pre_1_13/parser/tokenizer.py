@@ -112,7 +112,7 @@ class Tokenizer(object):
         return self.read_word(lambda x: x.isalnum(), lambda x: x in stop_chars, lambda x: x == ' ', pop=pop)
     
     def expect_integer(self, pop=True, stop_chars=' ') -> int:
-        return int(self.read_word(lambda x: x.isdigit(), lambda x: x in stop_chars, lambda x: x == ' ', pop=pop))
+        return int(self.read_word(lambda x: x.isdigit() or x in '+-', lambda x: x in stop_chars, lambda x: x == ' ', pop=pop))
 
     def expect_float(self, pop=True) -> float:
         pos = self.pos
@@ -309,11 +309,9 @@ class Tokenizer(object):
                 old_pos = self.pos
                 self.pos = pos
 
-                if argname in ['x', 'y', 'z']:
-                    argval = self.expect_coordinate(stop_chars=' ,]')
-                elif argname in ['r', 'rm', 'dx', 'dy', 'dz', 'c', 'l', 'lm', 'rx', 'rxm', 'ry', 'rym'] or argname.startswith('score_'):
+                if argname in ['x', 'y', 'z', 'r', 'rm', 'dx', 'dy', 'dz', 'c', 'l', 'lm', 'rx', 'rxm', 'ry', 'rym'] or argname.startswith('score_'):
                     argval = self.expect_integer(stop_chars=' ,]')
-                elif argname in ['tag', 'team', 'name', 'type']:
+                elif argname in ['tag', 'team', 'name', 'type', 'm']:
                     argval = self.expect_alnum_word(stop_chars=' ,]')
                 else:
                     raise Exception('Unknown selector argument: {}'.format(argname))
