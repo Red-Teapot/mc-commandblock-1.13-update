@@ -226,10 +226,13 @@ class Tokenizer(object):
         if pop:
             self.pos = pos
         
-        if '.' in value_str:
-            value = float(value_str)
+        if value_str:
+            if '.' in value_str:
+                value = float(value_str)
+            else:
+                value = int(value_str)
         else:
-            value = int(value_str)
+            value = None
         
         return Coordinate(prefix, value)
 
