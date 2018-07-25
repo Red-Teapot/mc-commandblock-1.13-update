@@ -110,6 +110,10 @@ class Parser(object):
         self.pos += 1
 
         while True:
+            if self.get(self.pos) == '}':
+                self.pos += 1
+                break
+            
             key = self.__parse_key()
 
             if self.get(self.pos) != ":":
@@ -121,10 +125,7 @@ class Parser(object):
 
             values[key] = value
 
-            if self.get(self.pos) == '}':
-                self.pos += 1
-                break
-            elif self.get(self.pos) == ',':
+            if self.get(self.pos) == ',':
                 self.pos += 1
         
         return NBTCompound(values)
