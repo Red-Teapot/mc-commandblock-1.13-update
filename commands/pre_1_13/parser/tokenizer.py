@@ -45,7 +45,7 @@ def process_selector_arguments(args: list) -> dict:
                 scores[name]['max'] = value
         else:
             if name in selector_arguments:
-                arguments[name] = selector_arguments[name](value)
+                arguments[name] = value
             else:
                 raise Exception('Unknown selector argument: {}={}'.format(name, value))
     
@@ -108,11 +108,11 @@ class Tokenizer(object):
         
         return result
     
-    def expect_alnum_word(self, pop=True) -> str:
-        return self.read_word(lambda x: x.isalnum(), lambda x: x == ' ', lambda x: x == ' ', pop=pop)
+    def expect_alnum_word(self, pop=True, stop_chars=' ') -> str:
+        return self.read_word(lambda x: x.isalnum(), lambda x: x in stop_chars, lambda x: x == ' ', pop=pop)
     
-    def expect_integer(self, pop=True) -> int:
-        return int(self.read_word(lambda x: x.isdigit(), lambda x: x == ' ', lambda x: x == ' ', pop=pop))
+    def expect_integer(self, pop=True, stop_chars=' ') -> int:
+        return int(self.read_word(lambda x: x.isdigit(), lambda x: x in stop_chars, lambda x: x == ' ', pop=pop))
 
     def expect_float(self, pop=True) -> float:
         pos = self.pos
@@ -180,7 +180,7 @@ class Tokenizer(object):
         else:
             return ID(None, word)
     
-    def expect_coordinate(self, pop=True) -> Coordinate:
+    def expect_coordinate(self, pop=True, stop_chars=' ') -> Coordinate:
         pos = self.pos
 
         value_str = ''
@@ -216,7 +216,7 @@ class Tokenizer(object):
                     read_dot = True
             elif c.isdigit():
                 value_str += c
-            elif c == ' ':
+            elif c in stop_chars:
                 break
             else:
                 raise Exception('Unknown char at {}: \'{}\''.format(pos, c))
@@ -306,20 +306,22 @@ class Tokenizer(object):
                     
                     pos += 1
                 
-                # Read value
-                while True:
-                    c = self.char(pos)
+                old_pos = self.pos
+                self.pos = pos
 
-                    if c.isalnum() or c in ['_', ':', '.', '#', '-', '!']:
-                        argval += c
-                    elif c == ',':
-                        pos += 1
-                        break
-                    elif c == ']':
-                        break
-                    else:
-                        raise Exception('Unknown char at {}: \'{}\''.format(pos, self.char(pos)))
-                    
+                if argname in ['x', 'y', 'z']:
+                    argval = self.expect_coordinate(stop_chars=' ,]')
+                elif argname in ['r', 'rm', 'dx', 'dy', 'dz', 'c', 'l', 'lm', 'rx', 'rxm', 'ry', 'rym'] or argname.startswith('score_'):
+                    argval = self.expect_integer(stop_chars=' ,]')
+                elif argname in ['tag', 'team', 'name', 'type']:
+                    argval = self.expect_alnum_word(stop_chars=' ,]')
+                else:
+                    raise Exception('Unknown selector argument: {}'.format(argname))
+
+                pos = self.pos
+                self.pos = old_pos
+
+                if self.char(pos) == ',':
                     pos += 1
                 
                 args += [(argname, argval)]
