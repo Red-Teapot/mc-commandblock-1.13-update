@@ -4,6 +4,7 @@ from .primitives.id import ID
 from .primitives.coordinate import Coordinate
 from .primitives.selector import Selector
 from .. import nbtstr
+from ..nbtstr.types import NBTType
 
 
 json_decoder = JSONDecoder()
@@ -240,7 +241,7 @@ class Tokenizer(object):
         
         return result
     
-    def expect_selector(self, pop=True):
+    def expect_selector(self, pop=True) -> Selector:
         pos = self.pos
 
         while True:
@@ -258,6 +259,11 @@ class Tokenizer(object):
                 raise Exception('Unknown selector variable at {}: \'{}\''.format(pos, variable))
             
             pos += 1
+
+            if self.char(pos) == ' ':
+                pos += 1
+                self.pos = pos
+                return Selector(variable, None, None)
 
             if self.char(pos) == '[':
                 pos += 1
@@ -335,10 +341,80 @@ class Tokenizer(object):
         
         return result
 
-    def expect_nbtstr(self, pop=True):
+    def expect_nbtstr(self, pop=True) -> NBTType:
         result, length = nbtstr_parser.parse(self.source[self.pos:])
 
         if pop:
             self.pos += length
+
+        return result
+
+    def expect_blockstate(self, pop=True):
+        pos = self.pos
+
+        while True:
+            c = self.char(pos)
+
+            if c != ' ':
+                break
+            
+            pos += 1
+        
+        result = dict()
+
+        while True:
+            if not self.char(pos):
+                break
+            
+            name = ''
+            value = ''
+
+            # Read name
+            while True:
+                c = self.char(pos)
+
+                if not c:
+                    raise Exception('Blockstate has no value, ended too early')
+
+                if c.isalnum() or c in '_.-+:':
+                    name += c
+                elif c == '=':
+                    pos += 1
+                    break
+                else:
+                    raise Exception('Unknown char at {}: \'{}\''.format(pos, self.char(pos)))
+                
+                pos += 1
+            
+            # Read value
+            while True:
+                c = self.char(pos)
+
+                if not c:
+                    if value:
+                        break
+                    else:
+                        raise Exception('Blockstate has no value, ended too early')
+                
+                if c.isalnum() or c in '_.-+:':
+                    value += c
+                elif c == ',':
+                    break
+                elif c == ' ':
+                    break
+                else:
+                    raise Exception('Unknown char at {}: \'{}\''.format(pos, self.char(pos)))
+                
+                pos += 1
+            
+            result[name] = value
+
+            if self.char(pos) == ',':
+                pos += 1
+            elif self.char(pos) == ' ':
+                break
+        
+        if pop:
+            self.pos = pos
 
         return result
