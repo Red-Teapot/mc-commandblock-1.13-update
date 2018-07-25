@@ -75,6 +75,13 @@ def upgrade(selector: Selector, additional_arguments: dict=None) -> str:
             if 'y_rotation' not in args:
                 args['y_rotation'] = dict()
             args['y_rotation']['min'] = int(value)
+        elif name == 'c':
+            limit = int(value)
+            if limit < 0:
+                args['sort'] = 'furthest'
+            args['limit'] = abs(limit)
+        else:
+            raise Exception('Unknown selector argument name: {}'.format(name))
     
     if has_args:
         result += '['
