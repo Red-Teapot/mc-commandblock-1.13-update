@@ -3,8 +3,9 @@ from . import NBTType
 
 class NBTString(NBTType):
     
-    def __init__(self, value):
+    def __init__(self, value, had_quotes=False):
         self.value = value
+        self.had_quotes = had_quotes
     
     @property
     def value(self) -> str:

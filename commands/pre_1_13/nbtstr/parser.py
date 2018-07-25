@@ -53,7 +53,7 @@ class Parser(object):
                 if size:
                     val += size
         
-        return NBTString(val)
+        return NBTString(val, False)
     
     def __parse_string(self) -> NBTString:
         if self.get(self.pos) != '"':
@@ -80,7 +80,7 @@ class Parser(object):
             
             self.pos += 1
         
-        return NBTString(val)
+        return NBTString(val, True)
 
     def __parse_key(self) -> str:  # Compound key (string or alnum with ._+-, no spaces or stuff)
         if self.get(self.pos) == '"':  # Key is wrapped in quotes
