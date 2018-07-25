@@ -30,7 +30,8 @@ class CMDEx(object):
     def match(self, cmd: str) -> list:
         tokenizer = Tokenizer(cmd)
 
-        result = list()
+        order = list()
+        props = dict()
 
         for token in self.tokens:
             if len(tokenizer.source[tokenizer.pos:].lstrip()) == 0:  # Expected token, but command is too short
@@ -43,7 +44,7 @@ class CMDEx(object):
                 if word != token:
                     raise Exception('Unknown token at {}: \'{}\', expected \'{}\''.format(old_pos, word, token))
                 
-                result += [word]
+                order += [word]
             else:
                 exp_type = token[0]
                 name = token[1]
@@ -76,9 +77,10 @@ class CMDEx(object):
                 else:
                     raise Exception('Unknown token type: {}'.format(exp_type))
                 
-                result += [(name, val)]
+                order += [name]
+                props[name] = val
         
         if len(tokenizer.source[tokenizer.pos:].lstrip()) != 0:  # Expected token, but command is too short
                 raise Exception('Command is too long, unexpected \'{}\''.format(tokenizer.source[tokenizer.pos:]))
         
-        return result
+        return order, props
