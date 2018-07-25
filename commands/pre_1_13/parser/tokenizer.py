@@ -234,10 +234,19 @@ class Tokenizer(object):
         return Coordinate(prefix, value)
 
     def expect_json(self, pop=True) -> dict:
-        result, pos = json_decoder.raw_decode(self.source[self.pos:])
+        pos = self.pos
+        while True:
+            c = self.char(pos)
+
+            if c != ' ':
+                break
+            
+            pos += 1
+        
+        result, pos_json = json_decoder.raw_decode(self.source[pos:])
 
         if pop:
-            self.pos += pos
+            self.pos += pos + pos_json
         
         return result
     
