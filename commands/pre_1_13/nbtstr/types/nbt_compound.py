@@ -22,10 +22,19 @@ class NBTCompound(NBTType):
         result = '{'
         
         for key, value in self.values.items():
-            for c in ' {}[],:':
-                if c in key:
-                    key = '"' + key + '"'
-                    break
+            quote = False
+
+            if serialization_params.key_quote_mode == 'force':
+                quote = True
+
+            if not quote:
+                for c in ' {}[],:':
+                    if c in key:
+                        quote = True
+                        break
+            
+            if quote:
+                key = '"' + key + '"'
             
             result += key + ':'
 
