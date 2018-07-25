@@ -129,6 +129,57 @@ class Parser(object):
         
         return NBTCompound(values)
 
+    def __parse_integer_array(self) -> NBTIntegerArray:
+        if self.get(self.pos) != '[':
+            raise Exception('Unknown char at {}:\'{}\', expected \'{}\''.format(self.pos, self.get(self.pos), '['))
+        
+        self.pos += 1
+
+        size = self.get(self.pos).upper()
+
+        if size not in 'BbIiLl':
+            raise Exception('Unknown array type: \'{}\' at {}'.format(self.get(self.pos), self.pos))
+        
+        self.pos += 1
+
+        if self.get(self.pos) != ';':
+            raise Exception('Unknown char at {}:\'{}\', expected \'{}\''.format(self.pos, self.get(self.pos), ';'))
+        
+        self.pos += 1
+        
+        values = list()
+
+        while True:
+            old_pos = self.pos
+
+            val = self.__parse_primitive()
+
+            if type(val) is not NBTInteger:
+                raise Exception('Unknown primitive type at {}: {}, expected NBTInteger'.format(self.pos, type(val).__name__))
+            
+            if size == 'I' and val.size:
+                raise Exception('Wrong integer type at {}: {}, expected {}'.format(old_pos, val.size, size))
+            
+            if size != 'I' and size != val.size:
+                raise Exception('Wrong integer type at {}: {}, expected {}'.format(old_pos, val.size, size))
+            
+            values += [val]
+
+            c = self.get(self.pos)
+
+            if c == ',':
+                self.pos += 1
+            elif c == ']':
+                self.pos += 1
+                break
+            else:
+                raise Exception('Unknown char at {}:\'{}\', expected , or ]'.format(self.pos, self.get(self.pos)))
+        
+        return NBTIntegerArray(size, values)
+
+    def __parse_list(self) -> NBTList:
+        pass
+
     def __parse_node(self) -> NBTType:
         # Try to figure out base type
         c = self.source[self.pos]
@@ -136,7 +187,10 @@ class Parser(object):
         if c == '{':  # Compound
             return self.__parse_compound()
         elif c == '[':  # List or array
-            print('List or array')
+            if self.get(self.pos + 2) == ';':  # Integer array
+                return self.__parse_integer_array()
+            else:
+                return self.__parse_list()
         elif c == '"':  # String
             return self.__parse_string()
         else:  # Boolean, integer, float or string
