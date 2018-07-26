@@ -1,4 +1,4 @@
-from . import selector
+from ..utils import selector
 from commands.pre_1_13.cmdex import CMDEx
 from commands.pre_1_13.nbtstr import SerializationParams
 

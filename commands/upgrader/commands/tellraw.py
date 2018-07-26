@@ -1,5 +1,5 @@
 import json
-from . import selector
+from ..utils import selector
 from commands.pre_1_13.cmdex import CMDEx
 
 

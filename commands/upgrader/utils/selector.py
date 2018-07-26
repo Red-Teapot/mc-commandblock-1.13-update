@@ -1,20 +1,8 @@
 from commands.pre_1_13.parser.primitives import Selector
+from commands.upgrader import data
 
 
-GAMEMODES = {
-    '0': 'survival',
-    's': 'survival',
-
-    '1': 'creative',
-    'c': 'creative',
-
-    '2': 'adventure',
-    'a': 'adventure',
-
-    '3': 'spectator',
-    'sp': 'spectator'
-}
-
+# TODO Upgrade entity types
 def upgrade(selector: Selector, additional_arguments: dict=None) -> str:
     result = '@' + selector.variable
 
@@ -58,7 +46,7 @@ def upgrade(selector: Selector, additional_arguments: dict=None) -> str:
         elif name in ['tag', 'team', 'name', 'type']:
             args[name] = str(value)
         elif name == 'm':
-            args['gamemode'] = GAMEMODES[value]
+            args['gamemode'] = data.gamemode_map[value]
         elif name == 'rx':
             if 'x_rotation' not in args:
                 args['x_rotation'] = dict()
