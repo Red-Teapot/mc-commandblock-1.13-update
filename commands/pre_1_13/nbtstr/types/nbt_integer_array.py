@@ -24,11 +24,15 @@ class NBTIntegerArray(NBTType):
     def values(self, values: list):
         self.__values = values
     
-    def serialize(self, serialization_params: SerializationParams) -> str:
+    def __str__(self):
         if not self.values:
             return '[{};]'.format(self.size)
         else:
-            return '[{};{}]'.format(self.size, ','.join([NBTType.serialize_val(x, serialization_params) for x in self.values]))
+            return '[{};{}]'.format(self.size, ','.join([str(x) for x in self.values]))
     
-    def __str__(self):
-        return '<NBTIntegerArray {}>'.format(self.serialize(NBTType.default_serialization_params))
+    def __eq__(self, other):
+        # TODO Should we allow comparison of integer arrays and lists?
+        if type(other) is not NBTIntegerArray:
+            return False
+        
+        return self.values == other.values

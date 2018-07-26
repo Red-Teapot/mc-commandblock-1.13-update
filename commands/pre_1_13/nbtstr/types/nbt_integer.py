@@ -32,16 +32,18 @@ class NBTInteger(NBTType):
         # TODO Maybe some range check?
         self.__value = value
     
-    def serialize(self, serialization_params: SerializationParams) -> str:
+    def __str__(self):
         size = self.size
-
-        if not size and serialization_params.integer_suffix_mode == 'force':
-            size = serialization_params.default_integer_suffix
         
         if size:
             return str(self.value) + size
         else:
             return str(self.value)
     
-    def __str__(self):
-        return '<NBTInteger {}>'.format(self.serialize(NBTType.default_serialization_params))
+    def __eq__(self, other):
+        # TODO Should we allow comparison of NBTFloats and NBTIntegers?
+        if type(other) is not NBTInteger:
+            return False
+        
+        # TODO Should we ignore the size?
+        return self.value == other.value

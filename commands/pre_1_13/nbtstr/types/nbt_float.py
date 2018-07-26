@@ -31,16 +31,18 @@ class NBTFloat(NBTType):
     def value(self, value: float):
         self.__value = value
     
-    def serialize(self, serialization_params: SerializationParams) -> str:
+    def __str__(self):
         size = self.size
-
-        if not size and serialization_params.float_suffix_mode == 'force':
-            size = 'F'
         
         if size:
             return str(self.value) + size
         else:
             return str(self.value)
     
-    def __str__(self):
-        return '<NBTFloat {}>'.format(self.serialize(NBTType.default_serialization_params))
+    def __eq__(self, other):
+        # TODO Should we allow comparison of NBTFloats and NBTIntegers?
+        if type(other) is not NBTFloat:
+            return False
+        
+        # TODO Should we ignore the size?
+        return self.value == other.value

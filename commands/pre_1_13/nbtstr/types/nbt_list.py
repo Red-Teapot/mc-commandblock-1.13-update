@@ -15,14 +15,15 @@ class NBTList(NBTType):
     def values(self, values: list):
         self.__values = values
     
-    def serialize(self, serialization_params: SerializationParams) -> str:
+    def __str__(self):
         if self.values:
-            return '[{}]'.format(','.join([NBTType.serialize_val(x, serialization_params) for x in self.values]))
+            return '[{}]'.format(','.join([str(x) for x in self.values]))
         else:
             return '[]'
     
-    def __str__(self):
-        if not self.values:
-            return '<NBTList (no values)>'
+    def __eq__(self, other):
+        # TODO Should we allow comparison of integer arrays and lists?
+        if type(other) is not NBTList:
+            return False
         
-        return '<NBTList {}>'.format(self.serialize(NBTType.default_serialization_params))
+        return self.values == other.values

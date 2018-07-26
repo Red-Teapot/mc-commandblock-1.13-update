@@ -15,11 +15,14 @@ class NBTBoolean(NBTType):
     def value(self, value:bool):
         self.__value = value
     
-    def serialize(self, serialization_params: SerializationParams) -> str:
+    def __str__(self):
         if self.value:
             return 'true'
         else:
             return 'false'
     
-    def __str__(self):
-        return '<NBTBoolean {}>'.format(self.serialize(NBTType.default_serialization_params))
+    def __eq__(self, other):
+        if type(other) is not NBTBoolean:
+            return False
+        
+        return self.value == other.value

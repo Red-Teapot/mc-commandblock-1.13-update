@@ -15,7 +15,7 @@ class NBTCompound(NBTType):
     def values(self, values: dict):
         self.__values = values
     
-    def serialize(self, serialization_params: SerializationParams) -> str:
+    def __str__(self):
         if not self.values:
             return '{}'
         
@@ -23,9 +23,6 @@ class NBTCompound(NBTType):
         
         for key, value in self.values.items():
             quote = False
-
-            if serialization_params.key_quote_mode == 'force':
-                quote = True
 
             if not quote:
                 for c in ' {}[],:':
@@ -38,7 +35,7 @@ class NBTCompound(NBTType):
             
             result += key + ':'
 
-            result += NBTType.serialize_val(value, serialization_params)
+            result += str(value)
             
             result += ','
         
@@ -49,5 +46,8 @@ class NBTCompound(NBTType):
 
         return result
     
-    def __str__(self):
-        return '<NBTCompound {}>'.format(self.serialize(NBTType.default_serialization_params))
+    def __eq__(self, other):
+        if type(other) is not NBTCompound:
+            return False
+        
+        return self.values == other.values
