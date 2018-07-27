@@ -3,7 +3,10 @@ from commands.upgrader import data
 
 
 # TODO Upgrade entity types
-def upgrade(selector: Selector, additional_arguments: dict=None) -> str:
+def upgrade(selector: Selector or str, additional_arguments: dict=None) -> str:
+    if type(selector) is str:
+        return selector
+    
     result = '@' + selector.variable
 
     has_args = False
@@ -20,56 +23,59 @@ def upgrade(selector: Selector, additional_arguments: dict=None) -> str:
         args = dict()
 
     # Pre-process arguments: use new names and merge values like r and rm into one dict
-    for name, value in selector.arguments.items():
-        if name in ['x', 'z']:
-            args[name] = int(value) + 0.5
-        elif name == 'y':
-            args[name] = int(value)
-        elif name == 'l':
-            if 'level' not in args:
-                args['level'] = dict()
-            args['level']['max'] = int(value)
-        elif name == 'lm':
-            if 'level' not in args:
-                args['level'] = dict()
-            args['level']['min'] = int(value)
-        elif name == 'r':
-            if 'distance' not in args:
-                args['distance'] = dict()
-            args['distance']['max'] = int(value)
-        elif name == 'rm':
-            if 'distance' not in args:
-                args['distance'] = dict()
-            args['distance']['min'] = int(value)
-        elif name in ['dx' 'dy', 'dz']:
-            args[name] = int(value)
-        elif name in ['tag', 'team', 'name', 'type']:
-            args[name] = str(value)
-        elif name == 'm':
-            args['gamemode'] = data.gamemode_map[value]
-        elif name == 'rx':
-            if 'x_rotation' not in args:
-                args['x_rotation'] = dict()
-            args['x_rotation']['max'] = int(value)
-        elif name == 'rxm':
-            if 'x_rotation' not in args:
-                args['x_rotation'] = dict()
-            args['x_rotation']['min'] = int(value)
-        elif name == 'ry':
-            if 'y_rotation' not in args:
-                args['y_rotation'] = dict()
-            args['y_rotation']['max'] = int(value)
-        elif name == 'rym':
-            if 'y_rotation' not in args:
-                args['y_rotation'] = dict()
-            args['y_rotation']['min'] = int(value)
-        elif name == 'c':
-            limit = int(value)
-            if limit < 0:
-                args['sort'] = 'furthest'
-            args['limit'] = abs(limit)
-        else:
-            raise Exception('Unknown selector argument name: {}'.format(name))
+    if selector.arguments:
+        for name, value in selector.arguments.items():
+            if name in ['x', 'z']:
+                args[name] = int(value) + 0.5
+            elif name == 'y':
+                args[name] = int(value)
+            elif name in ['dx', 'dy', 'dz']:
+                args[name] = int(value)
+            elif name == 'l':
+                if 'level' not in args:
+                    args['level'] = dict()
+                args['level']['max'] = int(value)
+            elif name == 'lm':
+                if 'level' not in args:
+                    args['level'] = dict()
+                args['level']['min'] = int(value)
+            elif name == 'r':
+                if 'distance' not in args:
+                    args['distance'] = dict()
+                args['distance']['max'] = int(value)
+            elif name == 'rm':
+                if 'distance' not in args:
+                    args['distance'] = dict()
+                args['distance']['min'] = int(value)
+            elif name in ['dx' 'dy', 'dz']:
+                args[name] = int(value)
+            elif name in ['tag', 'team', 'name', 'type']:
+                args[name] = str(value)
+            elif name == 'm':
+                args['gamemode'] = data.gamemode_map[value]
+            elif name == 'rx':
+                if 'x_rotation' not in args:
+                    args['x_rotation'] = dict()
+                args['x_rotation']['max'] = int(value)
+            elif name == 'rxm':
+                if 'x_rotation' not in args:
+                    args['x_rotation'] = dict()
+                args['x_rotation']['min'] = int(value)
+            elif name == 'ry':
+                if 'y_rotation' not in args:
+                    args['y_rotation'] = dict()
+                args['y_rotation']['max'] = int(value)
+            elif name == 'rym':
+                if 'y_rotation' not in args:
+                    args['y_rotation'] = dict()
+                args['y_rotation']['min'] = int(value)
+            elif name == 'c':
+                limit = int(value)
+                if limit < 0:
+                    args['sort'] = 'furthest'
+                args['limit'] = abs(limit)
+            else:
+                raise Exception('Unknown selector argument name: {}'.format(name))
     
     if has_args:
         result += '['
@@ -92,19 +98,20 @@ def upgrade(selector: Selector, additional_arguments: dict=None) -> str:
             result += name + '=' + str(value) + ','
     
     scores_str = ''
-    for name, value in selector.scores.items():
-        val = ''
-        if 'min' in value and 'max' in value:
-            if value['min'] == value['max']:
-                val = str(value['min'])
-            else:
-                val = str(value['min']) + '..' + str(value['max'])
-        elif 'min' in value:
-            val = str(value['min']) + '..'
-        elif 'max' in value:
-            val = '..' + str(value['max'])
-        
-        scores_str += name + '=' + val + ','
+    if selector.scores:
+        for name, value in selector.scores.items():
+            val = ''
+            if 'min' in value and 'max' in value:
+                if value['min'] == value['max']:
+                    val = str(value['min'])
+                else:
+                    val = str(value['min']) + '..' + str(value['max'])
+            elif 'min' in value:
+                val = str(value['min']) + '..'
+            elif 'max' in value:
+                val = '..' + str(value['max'])
+            
+            scores_str += name + '=' + val + ','
 
     if scores_str:
         if scores_str[-1] == ',':
