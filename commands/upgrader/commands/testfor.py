@@ -1,27 +1,22 @@
 from ..utils import selector
 from commands.pre_1_13.cmdex import CMDEx
 from commands.pre_1_13.nbtstr import SerializationParams
+from commands.upgrader.utils import command_upgrader_base
 
 
-cmdexs = [
+CMDEXS = [
     CMDEx('testfor {selector:selector}'),
     CMDEx('testfor {selector:selector} {nbtstr:nbt}'),
 ]
 
-ser_params = SerializationParams()
-
-def upgrade(command: str) -> str:
-    try:
-        order, props = cmdexs[0].match(command)
+def __upgrade(order, props):
+    if 'nbt' in props:
+        selector_old = props['selector']
+        sel = selector.upgrade(selector_old, {'nbt': str(props['nbt'])})
+        return 'execute if entity {}'.format(sel)
+    else:
         sel = selector.upgrade(props['selector'])
         return 'execute if entity {}'.format(sel)
-    except: pass
-    
-    try:
-        order, props = cmdexs[1].match(command)
-        selector_old = props['selector']
-        sel = selector.upgrade(selector_old, {'nbt': props['nbt'].serialize(ser_params)})
-        return 'execute if entity {}'.format(sel)
-    except: pass
-    
-    raise Exception('Unknown testfor command: \'{}\''.format(command))
+
+def upgrade(command: str) -> str:
+    return command_upgrader_base.upgrade(CMDEXS, command, __upgrade)
