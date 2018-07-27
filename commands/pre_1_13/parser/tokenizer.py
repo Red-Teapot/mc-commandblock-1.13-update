@@ -273,9 +273,10 @@ class Tokenizer(object):
             
             pos += 1
 
-            if self.char(pos) == ' ':
+            if self.char(pos) == ' ' or not self.char(pos):
                 pos += 1
-                self.pos = pos
+                if pop:
+                    self.pos = pos
                 return Selector(variable, None, None)
 
             if self.char(pos) == '[':
@@ -316,7 +317,7 @@ class Tokenizer(object):
                 if argname in ['x', 'y', 'z', 'r', 'rm', 'dx', 'dy', 'dz', 'c', 'l', 'lm', 'rx', 'rxm', 'ry', 'rym'] or argname.startswith('score_'):
                     argval = self.expect_integer(stop_chars=' ,]')
                 elif argname in ['tag', 'team', 'name', 'type', 'm']:
-                    argval = self.expect_alnum_word(stop_chars=' ,]')
+                    argval = self.read_word(lambda x: x.isalnum() or x in '_!.#', lambda x: x in ' ,]', lambda x: x == ' ', pop=pop)
                 else:
                     raise Exception('Unknown selector argument: {}'.format(argname))
 
