@@ -1,9 +1,12 @@
+import logging
+
 from commands.pre_1_13.cmdex import CMDEx
 from commands.pre_1_13.nbtstr import SerializationParams
-from commands.upgrader.utils import block
+from commands.upgrader.utils import block, command_upgrader_base
 
+logger = logging.getLogger(__name__)
 
-cmdexs = [
+CMDEXS = [
     CMDEx('setblock {coordinate:x} {coordinate:y} {coordinate:z} {id:id}'),
 
     CMDEx('setblock {coordinate:x} {coordinate:y} {coordinate:z} {id:id} {blockstate:state}'),
@@ -14,15 +17,8 @@ cmdexs = [
     CMDEx('setblock {coordinate:x} {coordinate:y} {coordinate:z} {id:id} {int:data} {str:handling}'),
     CMDEx('setblock {coordinate:x} {coordinate:y} {coordinate:z} {id:id} {int:data} {str:handling} {nbtstr:nbt}'),
 ]
-ser_params = SerializationParams()
 
-def upgrade(command: str) -> str:
-    for cmdex in cmdexs:
-        try:
-            order, props = cmdex.match(command)
-            break
-        except: pass
-    
+def __upgrade(order, props):
     if 'handling' in props and props['handling'] not in ['destroy', 'keep', 'replace']:
         raise Exception('Unknown old block handling mode: {}'.format(props['handling']))
         
@@ -58,3 +54,6 @@ def upgrade(command: str) -> str:
         handling = props['handling']
     
     return 'setblock {} {} {} {} {}'.format(props['x'], props['y'], props['z'], block_val, handling).strip()
+
+def upgrade(command: str) -> str:
+    return command_upgrader_base.upgrade(CMDEXS, command, __upgrade)
