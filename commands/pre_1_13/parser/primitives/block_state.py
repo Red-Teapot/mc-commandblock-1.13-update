@@ -13,3 +13,20 @@ class BlockState(object):
             result = result[:-1]
         
         return result
+    
+    def __eq__(self, other):
+        # TODO Allow comparison of BlockStates and dicts?
+        if type(other) is not BlockState:
+            return False
+        
+        return self.data == other.data
+    
+    @staticmethod
+    def parse(src: str):
+        data = dict()
+        if src:
+            for tok in src.split(','):
+                k, v = tok.split('=')
+
+                data[k] = v
+        return BlockState(data)
