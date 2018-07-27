@@ -23,7 +23,7 @@ def upgrade(command: str) -> str:
             break
         except: pass
     
-    if props['handling'] and props['handling'] not in ['destroy', 'keep', 'replace']:
+    if 'handling' in props and props['handling'] not in ['destroy', 'keep', 'replace']:
         raise Exception('Unknown old block handling mode: {}'.format(props['handling']))
         
     id = props['id']
@@ -53,8 +53,8 @@ def upgrade(command: str) -> str:
     if new_nbt:
         block_val += str(new_nbt)
         
-    mode = ''
-    if props['handling']:
-        mode = props['handling']
+    handling = ''
+    if 'handling' in props:
+        handling = props['handling']
     
-    return 'setblock {} {} {} {} {}'.format(props['x'], props['y'], props['z'], block_val, mode).strip()
+    return 'setblock {} {} {} {} {}'.format(props['x'], props['y'], props['z'], block_val, handling).strip()
