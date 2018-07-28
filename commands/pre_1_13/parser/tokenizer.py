@@ -341,7 +341,7 @@ class Tokenizer(object):
                 if not c:
                     break
                 
-                if c.isalnum() or c in ['.', '_', '#']:
+                if c.isalnum() or c in '._#!':
                     result += c
                 elif c == ' ':
                     break
@@ -441,3 +441,28 @@ class Tokenizer(object):
             self.pos = pos
 
         return BlockState(result)
+
+    def expect_specific_word(self, word: str, stop_chars=' ', pop=True) -> bool:
+        pos = self.pos
+
+        while True:
+            c = self.char(pos)
+
+            if not c or c != ' ':
+                break
+            
+            pos += 1
+
+        for c in word:
+            if c != self.char(pos):
+                raise Exception('Unknown char at {}: \'{}\', expected \'{}\''.format(pos, self.char(pos), c))
+            
+            pos += 1
+        
+        if self.char(pos) and self.char(pos) not in stop_chars:
+            raise Exception('Unknown char at {}: \'{}\', expected one of \'{}\''.format(pos, self.char(pos), stop_chars))
+        
+        if pop:
+            self.pos = pos
+        
+        return True
