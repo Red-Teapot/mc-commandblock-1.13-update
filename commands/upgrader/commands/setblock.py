@@ -3,6 +3,7 @@ import logging
 from commands.pre_1_13.cmdex import CMDEx
 from commands.pre_1_13.nbtstr import SerializationParams
 from commands.upgrader.utils import block, command_upgrader_base
+from commands import upgrader
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,10 @@ def __upgrade(order, props):
         nbt = None
     
     new_id, new_state, new_nbt = block.upgrade(id, state, data, nbt)
+
+    if new_id.value == 'command_block':
+        if new_nbt and new_nbt.values and 'Command' in new_nbt.values:
+            new_nbt.values['Command'].value = upgrader.upgrade(new_nbt.values['Command'].value)
 
     block_val = str(new_id)
 
