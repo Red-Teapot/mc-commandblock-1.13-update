@@ -38,19 +38,19 @@ class CMDEx(object):
                 raise Exception('Command is too short, expected {}'.format(token))
             
             if type(token) is str:
-                old_pos = tokenizer.pos
-                word = tokenizer.expect_alnum_word()
-
-                if word != token:
-                    raise Exception('Unknown token at {}: \'{}\', expected \'{}\''.format(old_pos, word, token))
+                tokenizer.expect_specific_word(token)
                 
-                order += [word]
+                order += [token]
             else:
                 exp_type = token[0]
                 name = token[1]
 
                 if exp_type == 'str':
-                    val = tokenizer.expect_alnum_word()
+                    val = tokenizer.read_word(lambda x: x.isalnum() or x in '_.#!', lambda x: x == ' ', lambda x: x == ' ', pop=True)
+                elif exp_type == 'op':
+                    val = tokenizer.read_word(lambda x: x in '+-></*=%', lambda x: x == ' ', lambda x: x == ' ', pop=True)
+                elif exp_type == 'tag':
+                    val = tokenizer.read_word(lambda x: x != ' ', lambda x: x == ' ', lambda x: x == ' ', pop=True)
                 elif exp_type == 'float':
                     val = tokenizer.expect_float()
                 elif exp_type == 'int':
@@ -77,7 +77,7 @@ class CMDEx(object):
                 else:
                     raise Exception('Unknown token type: {}'.format(exp_type))
                 
-                order += [name]
+                order += ['#' + name]
                 props[name] = val
         
         if len(tokenizer.source[tokenizer.pos:].lstrip()) != 0:  # Expected token, but command is too short
