@@ -10,4 +10,4 @@ def upgrade(command: str) -> str:
 
     new_selector = selector.upgrade(props['selector'])
 
-    return 'tellraw {} {}'.format(new_selector, json.dumps(props['message']))
+    return 'tellraw {} {}'.format(new_selector, json.dumps(props['message'], ensure_ascii=False))
