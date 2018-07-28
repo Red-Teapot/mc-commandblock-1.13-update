@@ -100,7 +100,7 @@ class BlockUpgrader(object):
         
         if self.id.value in blockstate.default_no_nbt_map:
             value = blockstate.default_no_nbt_map[self.id.value]
-            self.__set(value[0], BlockState(value[1] if value[1] else dict()))
+            self.__set(value[0], BlockState(value[1]) if value[1] else None)
             logger.debug('Set default non-NBT values: %s %s', value[0], value[1])
         
         if self.nbt and self.id.value in blockstate.default_nbt_map:
@@ -110,8 +110,8 @@ class BlockUpgrader(object):
                 key_nbt = nbtstr_parser.parse(key)[0]
                 
                 if check_dict_in(key_nbt.values, self.nbt.values):
-                    logger.debug('Set default NBT values: %s %s', value[0], value[1])
-                    self.__set(value[0], BlockState(value[1] if value[1] else dict()))
+                    logger.debug('Set default NBT values [%s]: %s %s', key, value[0], value[1])
+                    self.__set(value[0], BlockState(value[1]) if value[1] else None)
                     nbt_keys_to_drop = list(key_nbt.values.keys())
                     break
         
@@ -122,8 +122,8 @@ class BlockUpgrader(object):
                 key_bstate = BlockState.parse(key)
 
                 if check_dict_in(key_bstate.data, self.state.data):
-                    logger.debug('Set actual non-NBT values: %s %s', value[0], value[1])
-                    self.__set(value[0], BlockState(value[1] if value[1] else dict()))
+                    logger.debug('Set actual non-NBT values [%s]: %s %s', key, value[0], value[1])
+                    self.__set(value[0], BlockState(value[1]) if value[1] else None)
         
         if self.nbt and self.id.value in blockstate.actual_nbt_map:
             replacement_data = blockstate.actual_nbt_map[self.id.value]
@@ -135,8 +135,8 @@ class BlockUpgrader(object):
                 key_nbt = nbtstr_parser.parse(key_nbt_str)[0]
 
                 if check_dict_in(key_bstate.data, self.state.data) and check_dict_in(key_nbt.values, self.nbt.values):
-                    logger.debug('Set actual NBT values: %s %s', value[0], value[1])
-                    self.__set(value[0], BlockState(value[1] if value[1] else dict()))
+                    logger.debug('Set actual NBT values [%s]: %s %s', key, value[0], value[1])
+                    self.__set(value[0], BlockState(value[1]) if value[1] else None)
                     nbt_keys_to_drop += list(key_nbt.values.keys())
         
         if self.nbt and self.id.value in blockstate.additional_nbt_map:
@@ -146,8 +146,8 @@ class BlockUpgrader(object):
                 key_nbt = nbtstr_parser.parse(key)[0]
 
                 if check_dict_in(key_nbt.values, self.nbt.values):
-                    logger.debug('Add additional blockstate data: %s', value)
-                    self.__merge(value[0], BlockState(value[1] if value[1] else dict()))
+                    logger.debug('Add additional blockstate data [%s]: %s', key, value)
+                    self.__merge(value[0], BlockState(value[1]) if value[1] else None)
                     nbt_keys_to_drop += list(key_nbt.values.keys())
         
         if self.nbt:
