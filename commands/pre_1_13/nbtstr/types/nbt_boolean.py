@@ -1,19 +1,12 @@
-from . import NBTType
+from . import NBTValueType
 from ..serialization_params import SerializationParams
 
 
-class NBTBoolean(NBTType):
+class NBTBoolean(NBTValueType):
+    value_types = [bool]
 
     def __init__(self, value):
-        self.value = value
-    
-    @property
-    def value(self) -> bool:
-        return self.__value
-    
-    @value.setter
-    def value(self, value:bool):
-        self.__value = value
+        super().__init__(value)
     
     def __str__(self):
         if self.value:
@@ -21,8 +14,5 @@ class NBTBoolean(NBTType):
         else:
             return 'false'
     
-    def __eq__(self, other):
-        if type(other) is not NBTBoolean:
-            return False
-        
-        return self.value == other.value
+    def __bool__(self):
+        return self.value

@@ -1,12 +1,14 @@
-from . import NBTType
+from . import NBTValueType
 from ..serialization_params import SerializationParams
 
 
-class NBTFloat(NBTType):
+class NBTFloat(NBTValueType):
+    value_types = [float]
 
     def __init__(self, size, value):
+        super().__init__(value)
+
         self.size = size
-        self.value = value
     
     @property
     def size(self) -> str:
@@ -23,14 +25,6 @@ class NBTFloat(NBTType):
         
         self.__size = size.upper()
     
-    @property
-    def value(self) -> float:
-        return self.__value
-    
-    @value.setter
-    def value(self, value: float):
-        self.__value = value
-    
     def __str__(self):
         size = self.size
         
@@ -40,9 +34,8 @@ class NBTFloat(NBTType):
             return str(self.value)
     
     def __eq__(self, other):
-        # TODO Should we allow comparison of NBTFloats and NBTIntegers?
-        if type(other) is not NBTFloat:
-            return False
+        if type(other) is NBTFloat:
+            if self.size != other.size:
+                return False
         
-        # TODO Should we ignore the size?
-        return self.value == other.value
+        return super().__eq__(other)

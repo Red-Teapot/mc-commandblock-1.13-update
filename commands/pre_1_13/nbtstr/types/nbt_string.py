@@ -1,20 +1,13 @@
-from . import NBTType
+from . import NBTContainerType
 from ..serialization_params import SerializationParams
 
 
-class NBTString(NBTType):
+class NBTString(NBTContainerType):
+    value_types = [str, type(None)]
     
     def __init__(self, value, had_quotes=False):
-        self.value = value
+        super().__init__(value)
         self.had_quotes = had_quotes
-    
-    @property
-    def value(self) -> str:
-        return self.__value
-    
-    @value.setter
-    def value(self, value):
-        self.__value = value
     
     def __str__(self):
         if not self.value:
@@ -33,9 +26,3 @@ class NBTString(NBTType):
             return '"' + value + '"'
         else:
             return value
-    
-    def __eq__(self, other):
-        if type(other) is not NBTString:
-            return False
-        
-        return self.value == other.value

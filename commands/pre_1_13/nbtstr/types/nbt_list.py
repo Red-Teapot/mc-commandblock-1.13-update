@@ -1,29 +1,24 @@
-from . import NBTType
+from . import NBTContainerType
 from ..serialization_params import SerializationParams
 
 
-class NBTList(NBTType):
+class NBTList(NBTContainerType):
+    value_types = [list, type(None)]
 
-    def __init__(self, values):
-        self.values = values
+    def __init__(self, value):
+        self.value = value
     
+    # Kept for compatibility
     @property
     def values(self) -> list:
-        return self.__values
+        return self.value
     
     @values.setter
     def values(self, values: list):
-        self.__values = values
+        self.value = values
     
     def __str__(self):
         if self.values:
             return '[{}]'.format(','.join([str(x) for x in self.values]))
         else:
             return '[]'
-    
-    def __eq__(self, other):
-        # TODO Should we allow comparison of integer arrays and lists?
-        if type(other) is not NBTList:
-            return False
-        
-        return self.values == other.values

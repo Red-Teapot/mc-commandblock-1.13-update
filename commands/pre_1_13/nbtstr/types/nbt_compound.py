@@ -1,19 +1,21 @@
-from . import NBTType
+from . import NBTContainerType
 from ..serialization_params import SerializationParams
 
 
-class NBTCompound(NBTType):
+class NBTCompound(NBTContainerType):
+    value_types = [dict, type(None)]
 
-    def __init__(self, values):
-        self.values = values
+    def __init__(self, value):
+        super().__init__(value)
     
+    # Kept for compatibility
     @property
     def values(self) -> dict:
-        return self.__values
+        return self.value
     
     @values.setter
     def values(self, values: dict):
-        self.__values = values
+        self.value = values
     
     def __str__(self):
         if not self.values:
@@ -45,9 +47,3 @@ class NBTCompound(NBTType):
         result += '}'
 
         return result
-    
-    def __eq__(self, other):
-        if type(other) is not NBTCompound:
-            return False
-        
-        return self.values == other.values
