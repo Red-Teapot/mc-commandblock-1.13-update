@@ -1,7 +1,7 @@
 from commands.pre_1_13.cmdex import CMDEx
 from commands.upgrader.utils import command_upgrader_base
 from ..utils import entity
-
+from ..utils.nbt import entity as entity_nbt
 
 CMDEXS = [
     CMDEx('summon {id:id}'),
@@ -26,7 +26,8 @@ def __upgrade(order, props):
         result += str(props['z']) + ' '
     
     if 'nbt' in props:
-        result += str(props['nbt']) + ' '
+        new_nbt = entity_nbt.upgrade(props['nbt'])
+        result += str(new_nbt) + ' '
     
     if result[-1] == ' ':
         result = result[:-1]
