@@ -1,4 +1,5 @@
 from commands.pre_1_13.nbtstr.types import NBTCompound, NBTString
+from commands.pre_1_13.parser.primitives import ID
 from .. import effect, block, enchant
 from . import block as block_nbt
 
