@@ -51,6 +51,8 @@ class CMDEx(object):
                     val = tokenizer.read_word(lambda x: x in '+-></*=%', lambda x: x == ' ', lambda x: x == ' ', pop=True)
                 elif exp_type == 'tag':
                     val = tokenizer.read_word(lambda x: x != ' ', lambda x: x == ' ', lambda x: x == ' ', pop=True)
+                elif exp_type == 'function':
+                    val = tokenizer.read_word(lambda x: x.isalnum() or x in '_:/.', lambda x: x == ' ', lambda x: x == ' ', pop=True)
                 elif exp_type == 'float':
                     val = tokenizer.expect_float()
                 elif exp_type == 'int':
