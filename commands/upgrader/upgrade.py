@@ -1,5 +1,5 @@
 from ..pre_1_13.cmdex import CMDEx
-from .commands import tellraw, testfor, setblock, scoreboard, summon, give, blockdata, clear, effect
+from .commands import tellraw, testfor, setblock, scoreboard, summon, give, blockdata, clear, effect, tp
 
 
 def dummy(command: str) -> str:
@@ -15,6 +15,7 @@ CMD_UPGRADERS = {
     'blockdata': blockdata.upgrade,
     'clear': clear.upgrade,
     'effect': effect.upgrade,
+    'tp': tp.upgrade,
 }
 
 def upgrade(command: str) -> str:
