@@ -86,3 +86,17 @@ class CMDEx(object):
                 raise Exception('Command is too long, unexpected \'{}\''.format(tokenizer.source[tokenizer.pos:]))
         
         return order, props
+    
+    def __str__(self):
+        result = ''
+
+        for tok in self.tokens:
+            if type(tok) is str:
+                result += tok + ' '
+            else:
+                result += '{' + tok[0] + ':' + tok[1] + '} '
+        
+        if result[-1] == ' ':
+            result = result[:-1]
+        
+        return result
