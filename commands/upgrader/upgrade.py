@@ -1,24 +1,21 @@
+import pkgutil, logging
+
 from ..pre_1_13.cmdex import CMDEx
-from .commands import tellraw, testfor, setblock, scoreboard, summon, give, blockdata, clear, effect, tp, function, execute
+from . import commands
 
 
-def dummy(command: str) -> str:
-    return command
+logger = logging.getLogger(__name__)
 
-CMD_UPGRADERS = {
-    'tellraw': tellraw.upgrade,
-    'testfor': testfor.upgrade,
-    'setblock': setblock.upgrade,
-    'scoreboard': scoreboard.upgrade,
-    'summon': summon.upgrade,
-    'give': give.upgrade,
-    'blockdata': blockdata.upgrade,
-    'clear': clear.upgrade,
-    'effect': effect.upgrade,
-    'tp': tp.upgrade,
-    'function': function.upgrade,
-    'execute': execute.upgrade,
-}
+CMD_UPGRADERS = dict()
+
+for loader, module_name, is_pkg in pkgutil.walk_packages(commands.__path__):
+    full_name = commands.__name__ + '.' + module_name
+    module = loader.find_module(full_name).load_module(full_name)
+    
+    if hasattr(module, 'upgrade'):
+        CMD_UPGRADERS[module_name] = module.upgrade
+    else:
+        logger.warning('No upgrade method in module %s, skipping', module.__name__)
 
 def upgrade(command: str) -> str:
     command = command.strip()
