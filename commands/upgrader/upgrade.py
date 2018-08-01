@@ -23,7 +23,10 @@ def upgrade(command: str) -> str:
     if command[0] == '/':
         command = command[1:]
     
-    name = command[:command.find(' ')]
+    if command.find(' ') >= 0:
+        name = command[:command.find(' ')]
+    else:
+        name = command
 
     if name in CMD_UPGRADERS:
         return CMD_UPGRADERS[name](command)
