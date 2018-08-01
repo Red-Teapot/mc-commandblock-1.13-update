@@ -52,7 +52,10 @@ def upgrade(selector: Selector or str, additional_arguments: dict=None) -> str:
             elif name in ['tag', 'team', 'name', 'type']:
                 args[name] = str(value)
             elif name == 'm':
-                args['gamemode'] = data.gamemode_map[value]
+                if value[0] == '!':
+                    args['gamemode'] = '!' + data.gamemode_map[value[1:]]
+                else:
+                    args['gamemode'] = data.gamemode_map[value]
             elif name == 'rx':
                 if 'x_rotation' not in args:
                     args['x_rotation'] = dict()
