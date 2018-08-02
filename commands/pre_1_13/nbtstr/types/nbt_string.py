@@ -13,16 +13,6 @@ class NBTString(NBTContainerType):
         if not self.value:
             return '""'
         
-        add_quotes = False
-        
-        if not add_quotes:
-            for c in self.value:
-                if not c.isalnum() and c not in '._+-':
-                    add_quotes = True
-                    break
-        
         value = self.value.replace('"', '\\"')
-        if add_quotes:
-            return '"' + value + '"'
-        else:
-            return value
+
+        return '"' + value + '"'
