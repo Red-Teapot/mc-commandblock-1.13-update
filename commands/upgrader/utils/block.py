@@ -51,6 +51,11 @@ class BlockUpgrader(object):
         self.data = data
         self.nbt = nbt
 
+        if self.id.namespace:
+            self.id.namespace = self.id.namespace.lower()
+        if self.id.value:
+            self.id.value = self.id.value.lower()
+
         self.res_id = ID(self.id.namespace, self.id.value)
         self.res_state = BlockState(self.state.data.copy() if self.state and self.state.data else dict())
         self.res_nbt = None

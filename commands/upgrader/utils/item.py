@@ -5,6 +5,11 @@ from .nbt import item as item_nbt
 from .. import data
 
 def upgrade(id: ID, metadata: int, nbt: NBTCompound) -> str:
+    if id.namespace:
+            id.namespace = id.namespace.lower()
+    if id.value:
+        id.value = id.value.lower()
+
     if not metadata:
         metadata = 0
     
