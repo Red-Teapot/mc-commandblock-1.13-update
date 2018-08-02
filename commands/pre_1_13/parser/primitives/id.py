@@ -8,4 +8,4 @@ class ID(object):
         if self.namespace:
             return self.namespace + ':' + self.value
         else:
-            return self.value
+            return 'minecraft:' + self.value
