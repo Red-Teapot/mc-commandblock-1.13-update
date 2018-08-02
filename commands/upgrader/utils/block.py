@@ -103,11 +103,14 @@ class BlockUpgrader(object):
         
         nbt_keys_to_drop = list()
         state_keys_to_drop = list()
+        state_keys_to_keep = list()
         
         if self.id.value in blockstate.default_no_nbt_map:
             value = blockstate.default_no_nbt_map[self.id.value]
             self.__set(value[0], BlockState(value[1]) if value[1] else None)
             logger.debug('Set default non-NBT values: %s %s', value[0], value[1])
+            if value[1]:
+                state_keys_to_keep += value[1].keys()
         
         if self.nbt and self.id.value in blockstate.default_nbt_map:
             replacement_data = blockstate.default_nbt_map[self.id.value]
@@ -119,6 +122,8 @@ class BlockUpgrader(object):
                     logger.debug('Set default NBT values [%s]: %s %s', key, value[0], value[1])
                     self.__set(value[0], BlockState(value[1]) if value[1] else None)
                     nbt_keys_to_drop = list(key_nbt.values.keys())
+                    if value[1]:
+                        state_keys_to_keep += value[1].keys()
                     break
         
         if self.state and self.id.value in blockstate.actual_no_nbt_map:
@@ -131,6 +136,8 @@ class BlockUpgrader(object):
                     logger.debug('Set actual non-NBT values [%s]: %s %s', key, value[0], value[1])
                     self.__set(value[0], BlockState(value[1]) if value[1] else None)
                     state_keys_to_drop += key_bstate.data.keys()
+                    if value[1]:
+                        state_keys_to_keep += value[1].keys()
         
         if self.nbt and self.id.value in blockstate.actual_nbt_map:
             replacement_data = blockstate.actual_nbt_map[self.id.value]
@@ -146,6 +153,8 @@ class BlockUpgrader(object):
                     self.__set(value[0], BlockState(value[1]) if value[1] else None)
                     nbt_keys_to_drop += list(key_nbt.values.keys())
                     state_keys_to_drop += key_bstate.data.keys()
+                    if value[1]:
+                        state_keys_to_keep += value[1].keys()
         
         if self.nbt and self.id.value in blockstate.additional_nbt_map:
             additional_data = blockstate.additional_nbt_map[self.id.value]
@@ -157,6 +166,8 @@ class BlockUpgrader(object):
                     logger.debug('Add additional blockstate data [%s]: %s', key, value)
                     self.__merge(value[0], BlockState(value[1]) if value[1] else None)
                     nbt_keys_to_drop += list(key_nbt.values.keys())
+                    if value[1]:
+                        state_keys_to_keep += value[1].keys()
         
         if self.nbt:
             for key, value in self.nbt.values.items():
@@ -167,10 +178,11 @@ class BlockUpgrader(object):
                     self.res_nbt.values[key] = value
         
         logger.debug('Going to drop result state keys: %s', state_keys_to_drop)
+        logger.debug('Going to keep result state keys: %s', state_keys_to_keep)
         
         if self.res_state and self.res_state.data:
             for key in state_keys_to_drop:
-                if key in self.res_state.data:
+                if key in self.res_state.data and key not in state_keys_to_keep:
                     del self.res_state.data[key]
         
         if self.res_state and (not self.res_state.data or len(self.res_state.data) == 0):
