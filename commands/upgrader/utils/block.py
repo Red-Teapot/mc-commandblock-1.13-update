@@ -88,7 +88,7 @@ class BlockUpgrader(object):
     
     def upgrade(self):
         # Apply block data (if defined)
-        if self.data:
+        if self.data is not None:
             if self.state:
                 raise Exception('Both data and state can not be defined at one time')
             
