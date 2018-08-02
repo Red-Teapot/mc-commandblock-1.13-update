@@ -43,7 +43,8 @@ def __upgrade(order, props):
     
     new_id, new_state, new_nbt = block.upgrade(id, state, data, nbt)
 
-    new_nbt = nbt_upgrader.block.upgrade(new_nbt)
+    if new_nbt:
+        new_nbt = nbt_upgrader.block.upgrade(new_nbt)
 
     block_val = str(new_id)
 
