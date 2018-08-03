@@ -5,11 +5,14 @@ from ..utils import selector, effect
 
 
 CMDEXS = [
+    CMDEx('effect {selector:player} clear'),
+
     CMDEx('effect {selector:player} {int:id}'),
     CMDEx('effect {selector:player} {int:id} {int:duration}'),
     CMDEx('effect {selector:player} {int:id} {int:duration} {int:amplifier}'),
     CMDEx('effect {selector:player} {int:id} {int:duration} {int:amplifier} true'),
     CMDEx('effect {selector:player} {int:id} {int:duration} {int:amplifier} false'),
+
     CMDEx('effect {selector:player} {id:id}'),
     CMDEx('effect {selector:player} {id:id} {int:duration}'),
     CMDEx('effect {selector:player} {id:id} {int:duration} {int:amplifier}'),
@@ -20,7 +23,7 @@ CMDEXS = [
 def __upgrade(order, props):
     # Hack to handle clear command
 
-    if not props['id'].namespace and props['id'].value == 'clear':
+    if order[2] == 'clear':
         return 'effect clear ' + selector.upgrade(props['player'])
     
     new_selector = selector.upgrade(props['player'])
