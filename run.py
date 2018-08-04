@@ -3,7 +3,7 @@ import argparse, sys, logging, logging.config, os
 from commands.upgrader import upgrade
 from commands.pre_1_13.cmdex import CMDEx
 
-from processing import command_blocks
+from processing import command_blocks, functions
 
 arg_parser = argparse.ArgumentParser('Upgrades commands in functions and in-world command blocks to Minecraft 1.13 format')
 
@@ -41,6 +41,7 @@ if args.cmd_stdinput:
 
 if args.world:
     command_blocks.run(os.path.abspath(args.world))
+    functions.run(os.path.abspath(args.world))
 
     sys.exit(0)
 
