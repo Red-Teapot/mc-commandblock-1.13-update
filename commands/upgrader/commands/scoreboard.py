@@ -2,6 +2,7 @@ import logging
 
 from commands.pre_1_13.cmdex import CMDEx
 from commands.upgrader.utils import selector, command_upgrader_base
+from commands.pre_1_13.parser.primitives.selector import Selector
 
 CMDEXS = [
     CMDEx('scoreboard objectives list'),
@@ -103,6 +104,15 @@ CMDEXS = [
 
 logger = logging.getLogger(__name__)
 
+def __upgrade_entity(order: list, props: list, idx: int) -> str:
+    tok = order[idx]
+    if tok[0] == '#':
+        return selector.upgrade(props[tok[1:]])
+    elif tok == '*':
+        return '@a'
+    else:
+        raise Exception('Unknown token #{}'.format(idx))
+
 def __upgrade(order, props):
     logger.debug('%s %s', order, props)
 
@@ -110,24 +120,25 @@ def __upgrade(order, props):
 
     if order[1] == 'players' and order[2] == 'tag':
         result += 'tag '
-        if order[3] == '*':
-            result += '@a '
+        result += __upgrade_entity(order, props, 3)
+    elif order[1] == 'players' and order[2] == 'test':
+        if 'min' not in props and 'max' not in props:
+            result += 'execute if entity '
+            result += __upgrade_entity(order, props, 3)
         else:
-            result += selector.upgrade(props[order[3][1:]]) + ' '
-        for tok in order[4:]:
-            if tok[0] == '#':
-                tok = tok[1:]
-
-                if tok not in props:
-                    raise Exception('Unknown token name: {}'.format(tok))
-                
-                if tok in ['entity', 'target_name']:
-                    result += selector.upgrade(props[tok]) + ' '
-                else:
-                    result += str(props[tok]) + ' '
+            result += 'execute if score '
+            result += __upgrade_entity(order, props, 3) + ' '
+            result += 'matches '
+            result += props['objective'] + ' '
+            if 'min' in props and 'max' in props and props['min'] == props['max']:
+                result += str(props['min']) + ' '
             else:
-                result += tok + ' '
-            
+                if 'min' in props:
+                    result += str(props['min'])
+                result += '..'
+                if 'max' in props:
+                    result += str(props['max'])
+                result += ' '
     else:
         for tok in order:
             if tok[0] == '#':
