@@ -108,19 +108,40 @@ def __upgrade(order, props):
 
     result = ''
 
-    for tok in order:
-        if tok[0] == '#':
-            tok = tok[1:]
-
-            if tok not in props:
-                raise Exception('Unknown token name: {}'.format(tok))
-            
-            if tok in ['entity', 'target_name']:
-                result += selector.upgrade(props[tok]) + ' '
-            else:
-                result += str(props[tok]) + ' '
+    if order[1] == 'players' and order[2] == 'tag':
+        result += 'tag '
+        if order[3] == '*':
+            result += '@a '
         else:
-            result += tok + ' '
+            result += selector.upgrade(props[order[3][1:]]) + ' '
+        for tok in order[4:]:
+            if tok[0] == '#':
+                tok = tok[1:]
+
+                if tok not in props:
+                    raise Exception('Unknown token name: {}'.format(tok))
+                
+                if tok in ['entity', 'target_name']:
+                    result += selector.upgrade(props[tok]) + ' '
+                else:
+                    result += str(props[tok]) + ' '
+            else:
+                result += tok + ' '
+            
+    else:
+        for tok in order:
+            if tok[0] == '#':
+                tok = tok[1:]
+
+                if tok not in props:
+                    raise Exception('Unknown token name: {}'.format(tok))
+                
+                if tok in ['entity', 'target_name']:
+                    result += selector.upgrade(props[tok]) + ' '
+                else:
+                    result += str(props[tok]) + ' '
+            else:
+                result += tok + ' '
     
     if result[-1] == ' ':
         result = result[:-1]
