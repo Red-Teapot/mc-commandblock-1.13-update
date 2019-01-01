@@ -9,7 +9,11 @@ CMDEXS = [
 ]
 
 def __upgrade(order, props):
-    result = 'function ' + props['function'] + ' '
+    result = 'function '
+
+    colon_idx = props['function'].index(':')
+    function = 'default:' + props['function'][:colon_idx] + '/' + props['function'][colon_idx+1:]
+    result += function + ' '
 
     if len(order) >= 3:
         if order[2] in ['if', 'unless']:
