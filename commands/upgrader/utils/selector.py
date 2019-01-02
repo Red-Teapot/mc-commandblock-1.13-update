@@ -1,5 +1,7 @@
 from commands.pre_1_13.parser.primitives import Selector
 from commands.upgrader import data
+from commands.pre_1_13.parser.primitives.id import ID
+from commands.upgrader.utils import entity
 
 
 # TODO Upgrade entity types
@@ -49,7 +51,7 @@ def upgrade(selector: Selector or str, additional_arguments: dict=None) -> str:
                 args['distance']['min'] = int(value)
             elif name in ['dx' 'dy', 'dz']:
                 args[name] = int(value)
-            elif name in ['tag', 'team', 'name', 'type']:
+            elif name in ['tag', 'team', 'name']:
                 args[name] = str(value)
             elif name == 'm':
                 if value[0] == '!':
@@ -77,6 +79,13 @@ def upgrade(selector: Selector or str, additional_arguments: dict=None) -> str:
                 if limit < 0:
                     args['sort'] = 'furthest'
                 args['limit'] = abs(limit)
+            elif name == 'type':
+                is_negative = value.value[0] == '!'
+                actual_id = ID(value.namespace, value.value[1:] if is_negative else value.value)
+                upgraded_id = entity.upgrade(actual_id)
+                if is_negative:
+                    upgraded_id = '!' + upgraded_id
+                args['type'] = upgraded_id
             else:
                 raise Exception('Unknown selector argument name: {}'.format(name))
     
