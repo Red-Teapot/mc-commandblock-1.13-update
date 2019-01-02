@@ -22,7 +22,6 @@ CMDEXS = [
 
 def __upgrade(order, props):
     # Hack to handle clear command
-
     if order[2] == 'clear':
         return 'effect clear ' + selector.upgrade(props['player'])
     
@@ -36,16 +35,19 @@ def __upgrade(order, props):
     else:
         new_id = ID(None, effect.upgrade(props['id']))
 
-    result = 'effect give ' + new_selector + ' ' + str(new_id) + ' '
+    if 'duration' in props and props['duration'] <= 0:
+        result = 'effect clear ' + new_selector + ' ' + str(new_id)
+    else:
+        result = 'effect give ' + new_selector + ' ' + str(new_id) + ' '
 
-    if 'duration' in props:
-        result += str(props['duration']) + ' '
-    
-    if 'amplifier' in props:
-        result += str(props['amplifier']) + ' '
-    
-    if len(order) == 6 and order[5] in ['true', 'false']:
-        result += order[5] + ' '
+        if 'duration' in props:
+            result += str(props['duration']) + ' '
+        
+        if 'amplifier' in props:
+            result += str(props['amplifier']) + ' '
+        
+        if len(order) == 6 and order[5] in ['true', 'false']:
+            result += order[5] + ' '
     
     if result[-1] == ' ':
         result = result[:-1]
