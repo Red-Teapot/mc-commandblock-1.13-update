@@ -128,8 +128,8 @@ def __upgrade(order, props):
         else:
             result += 'execute if score '
             result += __upgrade_entity(order, props, 3) + ' '
-            result += 'matches '
             result += props['objective'] + ' '
+            result += 'matches '
             if 'min' in props and 'max' in props and props['min'] == props['max']:
                 result += str(props['min']) + ' '
             else:
