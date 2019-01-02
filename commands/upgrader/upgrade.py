@@ -31,5 +31,5 @@ def upgrade(command: str) -> str:
     if name in CMD_UPGRADERS:
         return CMD_UPGRADERS[name](command)
     else:
-        # TODO Maybe a warning?
+        logger.warning('Unknown command: \'{}\', leaving as is'.format(command))
         return command
