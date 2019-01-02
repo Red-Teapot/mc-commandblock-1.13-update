@@ -9,16 +9,19 @@ CMDEXS = [
 ]
 
 def __upgrade(order, props):
-    result = 'function '
+    result = ''
 
     colon_idx = props['function'].index(':')
     function = 'default:' + props['function'][:colon_idx] + '/' + props['function'][colon_idx+1:]
-    result += function + ' '
 
     if len(order) >= 3:
-        if order[2] in ['if', 'unless']:
-            result += order[2] + ' '
+        result += 'execute '
+        result += order[2] + ' entity '
         result += selector.upgrade(props['selector']) + ' '
+        result += 'run function '
+        result += function
+    else:
+        result += 'function ' + function
     
     if result[-1] == ' ':
         result = result[:-1]
