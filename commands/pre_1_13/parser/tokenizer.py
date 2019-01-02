@@ -160,7 +160,7 @@ class Tokenizer(object):
     
     def expect_id(self, pop=True) -> ID:
         pos = self.pos
-        word = self.read_word(lambda x: x.isalnum() or x in ['_', ':'], lambda x: x == ' ', lambda x: x == ' ', pop=pop)
+        word = self.read_word(lambda x: x.isalnum() or x in ['_', ':', '!'], lambda x: x in [' ', ',', ']'], lambda x: x == ' ', pop=pop)
 
         if word.count(':') > 1:
             self.pos = pos
@@ -316,8 +316,10 @@ class Tokenizer(object):
 
                 if argname in ['x', 'y', 'z', 'r', 'rm', 'dx', 'dy', 'dz', 'c', 'l', 'lm', 'rx', 'rxm', 'ry', 'rym'] or argname.startswith('score_'):
                     argval = self.expect_integer(stop_chars=' ,]')
-                elif argname in ['tag', 'team', 'name', 'type', 'm']:
+                elif argname in ['tag', 'team', 'name', 'm']:
                     argval = self.read_word(lambda x: x.isalnum() or x in '_!.#', lambda x: x in ' ,]', lambda x: x == ' ', pop=pop)
+                elif argname == 'type':
+                    argval = self.expect_id(pop=pop)
                 else:
                     raise Exception('Unknown selector argument: {}'.format(argname))
 
