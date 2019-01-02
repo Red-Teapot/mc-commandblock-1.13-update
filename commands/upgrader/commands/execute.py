@@ -4,10 +4,10 @@ from commands import upgrader
 from ..utils import selector, block
 
 CMDEXS = [
-    CMDEx('execute {selector:selector} {coordinate:x} {coordinate:y} {coordinate:z} {*:command}'),
-
     CMDEx('execute {selector:selector} {coordinate:x} {coordinate:y} {coordinate:z} detect {coordinate:bx} {coordinate:by} {coordinate:bz} {id:block} {int:bdata} {*:command}'),
     CMDEx('execute {selector:selector} {coordinate:x} {coordinate:y} {coordinate:z} detect {coordinate:bx} {coordinate:by} {coordinate:bz} {id:block} {blockstate:bstate} {*:command}'),
+    
+    CMDEx('execute {selector:selector} {coordinate:x} {coordinate:y} {coordinate:z} {*:command}'),
 ]
 
 def __upgrade(order, props):
