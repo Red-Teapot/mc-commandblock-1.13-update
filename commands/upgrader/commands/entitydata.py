@@ -8,7 +8,8 @@ CMDEXS = [
 ]
 
 def __upgrade(order, props):
-    result = 'data merge entity ' + selector.upgrade(props['entity']) + ' ' + str(nbt.entity.upgrade(props['data'])) + ' '
+    new_selector = selector.upgrade(props['entity'], {'limit': 1})
+    result = 'data merge entity ' + new_selector + ' ' + str(nbt.entity.upgrade(props['data'])) + ' '
     if result[-1] == ' ':
         return result[:-1]
     return result
