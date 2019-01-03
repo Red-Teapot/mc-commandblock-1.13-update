@@ -143,10 +143,10 @@ def __upgrade(order, props):
                     result += str(props['min']) + ' '
                 else:
                     if 'min' in props:
-                        result += props['min']
+                        result += str(props['min'])
                     result += '..'
                     if 'max' in props:
-                        result += props['max']
+                        result += str(props['max'])
                     result += ' '
         else:
             result += 'scoreboard players ' + order[2] + ' ' + new_entity + ' '
