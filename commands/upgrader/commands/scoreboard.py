@@ -125,7 +125,7 @@ def __upgrade(order, props):
         new_entity = __upgrade_entity(order, props)
 
         if order[2] == 'tag':
-            result += 'tag ' + new_entity
+            result += 'tag ' + new_entity + ' '
             for tok in order[4:]:
                 if tok == '#nbt':
                     continue
@@ -154,14 +154,16 @@ def __upgrade(order, props):
                 if tok == '#nbt':
                     continue
                 if tok == '#other':
-                    result += selector.upgrade(props['other'])
+                    result += selector.upgrade(props['other']) + ' '
                 elif tok[0] == '#':
                     result += str(props[tok[1:]]) + ' '
                 else:
                     result += tok + ' '
     else:
         for tok in order:
-            if tok[0] == '#':
+            if tok == '#entity':
+                result += selector.upgrade(props['entity']) + ' '
+            elif tok[0] == '#':
                 result += str(props[tok[1:]]) + ' '
             else:
                 result += tok + ' '
