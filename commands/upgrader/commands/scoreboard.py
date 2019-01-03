@@ -44,9 +44,9 @@ CMDEXS = [
     CMDEx('scoreboard players enable * {str:trigger}'),
     CMDEx('scoreboard players enable {selector:entity} {str:trigger}'),
 
-    CMDEx('scoreboard players operation * {str:target_objective} {op:operation} {selector:entity} {str:objective}'),
-    CMDEx('scoreboard players operation {selector:target_name} {str:target_objective} {op:operation} * {str:objective}'),
-    CMDEx('scoreboard players operation {selector:target_name} {str:target_objective} {op:operation} {selector:entity} {str:objective}'),
+    CMDEx('scoreboard players operation * {str:target_objective} {op:operation} {selector:other} {str:objective}'),
+    CMDEx('scoreboard players operation {selector:entity} {str:target_objective} {op:operation} * {str:objective}'),
+    CMDEx('scoreboard players operation {selector:entity} {str:target_objective} {op:operation} {selector:other} {str:objective}'),
 
     CMDEx('scoreboard players tag * add {tag:tag_name}'),
     CMDEx('scoreboard players tag * add {tag:tag_name} {nbtstr:nbt}'),
@@ -104,53 +104,65 @@ CMDEXS = [
 
 logger = logging.getLogger(__name__)
 
-def __upgrade_entity(order: list, props: list, idx: int) -> str:
-    tok = order[idx]
-    if tok[0] == '#':
-        return selector.upgrade(props[tok[1:]])
-    elif tok == '*':
-        return '@a'
+def __upgrade_entity(order: list, props: list) -> str:
+    additional_args = dict()
+    if 'nbt' in props:
+        additional_args['nbt'] = props['nbt']
+    
+    if 'entity' in props:
+        return selector.upgrade(props['entity'], additional_args)
+    elif len(order) > 4 and order[3] == '*':
+        return str(Selector('a', additional_args, {}))
     else:
-        raise Exception('Unknown token #{}'.format(idx))
+        raise Exception('Can not upgrade entity')
 
 def __upgrade(order, props):
     logger.debug('%s %s', order, props)
 
     result = ''
 
-    if order[1] == 'players' and order[2] == 'tag':
-        result += 'tag '
-        result += __upgrade_entity(order, props, 3)
-    elif order[1] == 'players' and order[2] == 'test':
-        if 'min' not in props and 'max' not in props:
-            result += 'execute if entity '
-            result += __upgrade_entity(order, props, 3)
-        else:
-            result += 'execute if score '
-            result += __upgrade_entity(order, props, 3) + ' '
-            result += props['objective'] + ' '
-            result += 'matches '
-            if 'min' in props and 'max' in props and props['min'] == props['max']:
-                result += str(props['min']) + ' '
+    if order[1] == 'players':
+        new_entity = __upgrade_entity(order, props)
+
+        if order[2] == 'tag':
+            result += 'tag ' + new_entity
+            for tok in order[4:]:
+                if tok == '#nbt':
+                    continue
+                if tok[0] == '#':
+                    result += str(props[tok[1:]]) + ' '
+                else:
+                    result += tok + ' '
+        elif order[2] == 'test':
+            if 'min' not in props and 'max' not in props:
+                result += 'execute if entity ' + new_entity + ' '
             else:
-                if 'min' in props:
-                    result += str(props['min'])
-                result += '..'
-                if 'max' in props:
-                    result += str(props['max'])
-                result += ' '
+                result += 'execute if score ' + new_entity + ' '
+                result += props['objective'] + ' matches '
+                if 'min' in props and 'max' in props and props['min'] == props['max']:
+                    result += str(props['min']) + ' '
+                else:
+                    if 'min' in props:
+                        result += props['min']
+                    result += '..'
+                    if 'max' in props:
+                        result += props['max']
+                    result += ' '
+        else:
+            result += 'scoreboard players ' + order[2] + ' ' + new_entity + ' '
+            for tok in order[4:]:
+                if tok == '#nbt':
+                    continue
+                if tok == '#other':
+                    result += selector.upgrade(props['other'])
+                elif tok[0] == '#':
+                    result += str(props[tok[1:]]) + ' '
+                else:
+                    result += tok + ' '
     else:
         for tok in order:
             if tok[0] == '#':
-                tok = tok[1:]
-
-                if tok not in props:
-                    raise Exception('Unknown token name: {}'.format(tok))
-                
-                if tok in ['entity', 'target_name']:
-                    result += selector.upgrade(props[tok]) + ' '
-                else:
-                    result += str(props[tok]) + ' '
+                result += str(props[tok[1:]]) + ' '
             else:
                 result += tok + ' '
     
