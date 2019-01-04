@@ -159,6 +159,15 @@ def __upgrade(order, props):
                     result += str(props[tok[1:]]) + ' '
                 else:
                     result += tok + ' '
+    elif order[1] == 'teams':
+        result += 'team '
+        for tok in order[2:]:
+            if tok == '#entity':
+                result += selector.upgrade(props['entity']) + ' '
+            elif tok[0] == '#':
+                result += str(props[tok[1:]]) + ' '
+            else:
+                result += tok + ' '
     else:
         for tok in order:
             if tok == '#entity':
