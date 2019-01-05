@@ -82,7 +82,7 @@ class CMDEx(object):
                 order += ['#' + name]
                 props[name] = val
         
-        if len(tokenizer.source[tokenizer.pos:].lstrip()) != 0:  # Expected token, but command is too short
+        if len(tokenizer.source[tokenizer.pos:].lstrip()) != 0:  # Expected end of command, but found stuff
                 raise Exception('Command is too long, unexpected \'{}\''.format(tokenizer.source[tokenizer.pos:]))
         
         return order, props
