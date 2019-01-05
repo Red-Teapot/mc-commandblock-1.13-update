@@ -8,11 +8,18 @@ CMDEXS = [
 ]
 
 def __upgrade(order, props):
-    result = 'xp '
+    result = ''
 
-    result += props['amount'] + ' '
+    amount_raw = props['amount'].lower()
 
-    result += selector.upgrade(props['player']) + ' '
+    is_levels = True if amount_raw[-1] == 'l' else False
+    amount = int(amount_raw[:-1]) if is_levels else int(amount_raw)
+    sel = selector.upgrade(props['player'])
+
+    result += 'xp add '
+    result += sel + ' '
+    result += str(amount) + ' '
+    result += 'levels ' if is_levels else 'points '
 
     if result[-1] == ' ':
         result = result[:-1]

@@ -46,7 +46,7 @@ class CMDEx(object):
                 name = token[1]
 
                 if exp_type == 'str':
-                    val = tokenizer.read_word(lambda x: x.isalnum() or x in '_.#!', lambda x: x == ' ', lambda x: x == ' ', pop=True)
+                    val = tokenizer.read_word(lambda x: x.isalnum() or x in '_-.#!', lambda x: x == ' ', lambda x: x == ' ', pop=True)
                 elif exp_type == 'op':
                     val = tokenizer.read_word(lambda x: x in '+-></*=%', lambda x: x == ' ', lambda x: x == ' ', pop=True)
                 elif exp_type == 'tag':
