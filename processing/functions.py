@@ -22,6 +22,14 @@ def process_file(file):
                 new_cmd = line
                 try:
                     new_cmd = upgrader.upgrade(line)
+                except Warning as w:
+                    print(json.dumps({
+                        'type': 'function',
+                        'file': file,
+                        'line': line_num + 1,
+                        'old_command': line,
+                        'warning': str(w)
+                    }, ensure_ascii=False))
                 except Exception as e:
                     print(json.dumps({
                         'type': 'function',

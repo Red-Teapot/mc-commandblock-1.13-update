@@ -30,6 +30,15 @@ def process_region(region_file):
                     tile_entity['Command'].value = new_command
                     chunk_needs_update = True
                     logger.debug('Upgraded cmd at %s %s %s: %s', x, y, z, new_command)
+                except Warning as w:
+                    print(json.dumps({
+                        'type': 'command_block',
+                        'x': x, 
+                        'y': y, 
+                        'z': z,
+                        'old_command': old_command,
+                        'warning': str(w)
+                    }, ensure_ascii=False))
                 except Exception as e:
                     print(json.dumps({
                         'type': 'command_block',
