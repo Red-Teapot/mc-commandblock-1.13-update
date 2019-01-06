@@ -23,10 +23,19 @@ def __upgrade(order, props):
             result = result[:-1]
         return result
     else:
-        result = 'tp '
-        if 'target_player' in props:
+        result = ''
+
+        if (props['x'].prefix or props['y'].prefix or props['z'].prefix) and 'target_player' in props:
+            result += 'execute as '
             result += selector.upgrade(props['target_player']) + ' '
-        result += str(props['x']) + ' ' + str(props['y']) + ' ' + str(props['z']) + ' '
+            result += 'at @s run tp @s '
+            result += str(props['x']) + ' ' + str(props['y']) + ' ' + str(props['z']) + ' '
+        else:
+            result += 'tp '
+            if 'target_player' in props:
+                result += selector.upgrade(props['target_player']) + ' '
+            result += str(props['x']) + ' ' + str(props['y']) + ' ' + str(props['z']) + ' '
+
         if 'yaw' in props:
             result += str(props['yaw']) + ' '
         if 'pitch' in props:
