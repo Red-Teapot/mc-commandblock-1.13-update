@@ -9,5 +9,8 @@ def upgrade(nbt: NBTCompound) -> NBTCompound:
     if 'Passengers' in nbt:
         for i in range(0, len(nbt['Passengers'])):
             nbt['Passengers'][i] = upgrade(nbt['Passengers'][i])
+    
+    if 'CustomName' in nbt:
+        nbt['CustomName'] = '\"\\"' + nbt['CustomName'].value + '\\"\"'
 
     return nbt
