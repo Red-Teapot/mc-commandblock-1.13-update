@@ -1,7 +1,7 @@
 from commands.pre_1_13.nbtstr.types import NBTCompound, NBTString
 from commands.pre_1_13.parser.primitives import ID
-from .. import effect, block, enchant
-from . import block as block_nbt
+from commands.upgrader.utils.nbt import block as block_nbt
+from commands.upgrader.utils import enchant, block, effect
 
 def upgrade(nbt: NBTCompound) -> NBTCompound:
     if 'ench' in nbt:
@@ -31,5 +31,9 @@ def upgrade(nbt: NBTCompound) -> NBTCompound:
         for i in range(0, len(nbt['CustomPotionEffects'])):
             old_id = nbt['CustomPotionEffects'][i]['id'].value
             nbt['CustomPotionEffects'][i]['id'] = NBTString(effect.upgrade(old_id))
+    
+    if 'display' in nbt:
+        if 'Name' in nbt['display']:
+            nbt['display']['Name'] = '\"\\"' + nbt['display']['Name'].value + '\\"\"'
 
     return nbt
