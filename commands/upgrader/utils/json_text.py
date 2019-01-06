@@ -18,6 +18,10 @@ def upgrade(json_text) -> dict:
             tokenizer = Tokenizer(text['score']['name'])
             sel = tokenizer.expect_selector(pop=True)
             text['score']['name'] = selector.upgrade(sel)
+        if 'extra' in text:
+            extra = text['extra']
+            for i in range(0, len(extra)):
+                extra[i] = upgrade(extra[i])
 
         return text
     else:
