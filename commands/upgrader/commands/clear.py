@@ -24,11 +24,11 @@ def __upgrade(order, props):
         data = props['data'] if 'data' in props else None
         nbt = props['nbt'] if 'nbt' in props else None
 
-        new_item = item.upgrade(props['item'], data, nbt)
+        new_item = item.upgrade(id, data if data != -1 else None, nbt)
 
         result += str(new_item) + ' '
     
-    if 'count' in props:
+    if 'count' in props and props['count'] != -1:
         count = props['count']
         result += str(count) + ' '
     
