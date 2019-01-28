@@ -123,11 +123,17 @@ class Parser(object):
             
             self.pos += 1
 
+            while self.get(self.pos) == ' ':
+                self.pos += 1
+
             value = self.__parse_node()
 
             values[key] = value
 
             if self.get(self.pos) == ',':
+                self.pos += 1
+            
+            while self.get(self.pos) == ' ':
                 self.pos += 1
         
         return NBTCompound(values)
@@ -211,6 +217,9 @@ class Parser(object):
                 self.pos += 1
             elif self.get(self.pos) != ']':
                 raise Exception('Unknown char at {}:\'{}\', expected \'{}\''.format(self.pos, self.get(self.pos), ','))
+            
+            while self.get(self.pos) == ' ':
+                self.pos += 1
         
         return NBTList(values)
 
