@@ -27,11 +27,6 @@ def upgrade(nbt: NBTCompound) -> NBTCompound:
     if 'BlockEntityTag' in nbt:
         nbt['BlockEntityTag'] = block_nbt.upgrade(nbt['BlockEntityTag'])
     
-    if 'CustomPotionEffects' in nbt:
-        for i in range(0, len(nbt['CustomPotionEffects'])):
-            old_id = nbt['CustomPotionEffects'][i]['id'].value
-            nbt['CustomPotionEffects'][i]['id'] = NBTString(effect.upgrade(old_id))
-    
     if 'display' in nbt:
         if 'Name' in nbt['display']:
             nbt['display']['Name'] = '\"\\"' + nbt['display']['Name'].value + '\\"\"'
